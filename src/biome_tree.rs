@@ -1,4 +1,12 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![allow(
+    dead_code,
+    mutable_transmutes,
+    non_camel_case_types,
+    non_snake_case,
+    non_upper_case_globals,
+    unused_assignments,
+    unused_mut
+)]
 #![register_tool(c2rust)]
 #![feature(extern_types, register_tool)]
 extern "C" {
@@ -17178,25 +17186,20 @@ static mut biome_tree_19: [uint64_t; 8438] = [
     0xff026869603a5b60 as libc::c_ulong,
 ];
 #[inline(always)]
-unsafe extern "C" fn get_np_dist(
-    mut arg: *const _args,
-    mut idx: libc::c_int,
-) -> uint64_t {
+unsafe extern "C" fn get_np_dist(mut arg: *const _args, mut idx: libc::c_int) -> uint64_t {
     let mut ds: uint64_t = 0 as libc::c_int as uint64_t;
     let mut node: uint64_t = *((*arg).tree).offset(idx as isize);
     let mut i: libc::c_int = 0;
     i = 0 as libc::c_int;
     while i < 6 as libc::c_int {
-        let mut idx_0: uint8_t = (node >> 8 as libc::c_int * i
-            & 0xff as libc::c_int as libc::c_ulong) as uint8_t;
+        let mut idx_0: uint8_t =
+            (node >> 8 as libc::c_int * i & 0xff as libc::c_int as libc::c_ulong) as uint8_t;
         let mut a: uint64_t = 0;
         let mut b: uint64_t = 0;
         let mut d: uint64_t = 0;
-        a = (*((*arg).np).offset(i as isize))
-            .wrapping_sub(
-                (*((*arg).param).offset(idx_0 as isize))[1 as libc::c_int as usize]
-                    as libc::c_ulong,
-            );
+        a = (*((*arg).np).offset(i as isize)).wrapping_sub(
+            (*((*arg).param).offset(idx_0 as isize))[1 as libc::c_int as usize] as libc::c_ulong,
+        );
         b = (*((*arg).np).offset(i as isize))
             .wrapping_neg()
             .wrapping_add(
@@ -17240,8 +17243,7 @@ unsafe extern "C" fn get_resulting_node(
         if depth > 4 as libc::c_int {
             fprintf(
                 stderr,
-                b"get_resulting_node(): fatal error\n\0" as *const u8
-                    as *const libc::c_char,
+                b"get_resulting_node(): fatal error\n\0" as *const u8 as *const libc::c_char,
             );
             exit(1 as libc::c_int);
         }
@@ -17257,13 +17259,8 @@ unsafe extern "C" fn get_resulting_node(
     while i < 10 as libc::c_int {
         let mut ds_inner: uint64_t = get_np_dist(arg, inner as libc::c_int);
         if ds_inner < ds {
-            let mut leaf2: libc::c_int = get_resulting_node(
-                arg,
-                inner as libc::c_int,
-                leaf,
-                ds,
-                depth,
-            );
+            let mut leaf2: libc::c_int =
+                get_resulting_node(arg, inner as libc::c_int, leaf, ds, depth);
             let mut ds_leaf2: uint64_t = 0;
             if inner as libc::c_int == leaf2 {
                 ds_leaf2 = ds_inner;
@@ -17299,16 +17296,14 @@ pub unsafe extern "C" fn p2overworld(
         a.np = np;
         a.param = biome_param_18.as_ptr();
         a.tree = biome_tree_18.as_ptr();
-        a
-            .len = (::std::mem::size_of::<[uint64_t; 8421]>() as libc::c_ulong)
+        a.len = (::std::mem::size_of::<[uint64_t; 8421]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<uint64_t>() as libc::c_ulong)
             as uint32_t;
     } else {
         a.np = np;
         a.param = biome_param_19.as_ptr();
         a.tree = biome_tree_19.as_ptr();
-        a
-            .len = (::std::mem::size_of::<[uint64_t; 8438]>() as libc::c_ulong)
+        a.len = (::std::mem::size_of::<[uint64_t; 8438]>() as libc::c_ulong)
             .wrapping_div(::std::mem::size_of::<uint64_t>() as libc::c_ulong)
             as uint32_t;
     }
@@ -17318,17 +17313,11 @@ pub unsafe extern "C" fn p2overworld(
         alt = *dat as libc::c_int;
         ds = get_np_dist(&mut a, alt);
     }
-    let mut idx: libc::c_int = get_resulting_node(
-        &mut a,
-        0 as libc::c_int,
-        alt,
-        ds,
-        0 as libc::c_int,
-    );
+    let mut idx: libc::c_int =
+        get_resulting_node(&mut a, 0 as libc::c_int, alt, ds, 0 as libc::c_int);
     if !dat.is_null() {
         *dat = idx as uint64_t;
     }
     let mut node: uint64_t = *(a.tree).offset(idx as isize);
-    return (node >> 48 as libc::c_int & 0xff as libc::c_int as libc::c_ulong)
-        as libc::c_int;
+    return (node >> 48 as libc::c_int & 0xff as libc::c_int as libc::c_ulong) as libc::c_int;
 }

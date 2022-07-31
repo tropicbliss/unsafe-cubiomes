@@ -1,4 +1,12 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![allow(
+    dead_code,
+    mutable_transmutes,
+    non_camel_case_types,
+    non_snake_case,
+    non_upper_case_globals,
+    unused_assignments,
+    unused_mut
+)]
 #![register_tool(c2rust)]
 #![feature(extern_types, register_tool)]
 extern "C" {
@@ -6,11 +14,7 @@ extern "C" {
     pub type _IO_codecvt;
     pub type _IO_marker;
     fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
-    fn memset(
-        _: *mut libc::c_void,
-        _: libc::c_int,
-        _: libc::c_ulong,
-    ) -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     fn fprintf(_: *mut FILE, _: *const libc::c_char, _: ...) -> libc::c_int;
     fn fclose(__stream: *mut FILE) -> libc::c_int;
     fn fwrite(
@@ -20,11 +24,7 @@ extern "C" {
         _: *mut FILE,
     ) -> libc::c_ulong;
     fn fopen(_: *const libc::c_char, _: *const libc::c_char) -> *mut FILE;
-    fn strtol(
-        _: *const libc::c_char,
-        _: *mut *mut libc::c_char,
-        _: libc::c_int,
-    ) -> libc::c_long;
+    fn strtol(_: *const libc::c_char, _: *mut *mut libc::c_char, _: libc::c_int) -> libc::c_long;
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     fn strstr(_: *const libc::c_char, _: *const libc::c_char) -> *mut libc::c_char;
 }
@@ -428,8 +428,7 @@ pub unsafe extern "C" fn biome2str(
         164 => return b"shattered_savanna_plateau\0" as *const u8 as *const libc::c_char,
         165 => return b"eroded_badlands\0" as *const u8 as *const libc::c_char,
         166 => {
-            return b"modified_wooded_badlands_plateau\0" as *const u8
-                as *const libc::c_char;
+            return b"modified_wooded_badlands_plateau\0" as *const u8 as *const libc::c_char;
         }
         167 => return b"modified_badlands_plateau\0" as *const u8 as *const libc::c_char,
         168 => return b"bamboo_jungle\0" as *const u8 as *const libc::c_char,
@@ -473,37 +472,28 @@ pub unsafe extern "C" fn setMutationColor(
     let mut c: libc::c_uint = 0;
     c = ((*biomeColor.offset(parent as isize))[0 as libc::c_int as usize] as libc::c_int
         + 40 as libc::c_int) as libc::c_uint;
-    (*biomeColor
-        .offset(
-            mutated as isize,
-        ))[0 as libc::c_int
-        as usize] = (if c > 255 as libc::c_int as libc::c_uint {
-        255 as libc::c_int as libc::c_uint
-    } else {
-        c
-    }) as libc::c_uchar;
+    (*biomeColor.offset(mutated as isize))[0 as libc::c_int as usize] =
+        (if c > 255 as libc::c_int as libc::c_uint {
+            255 as libc::c_int as libc::c_uint
+        } else {
+            c
+        }) as libc::c_uchar;
     c = ((*biomeColor.offset(parent as isize))[1 as libc::c_int as usize] as libc::c_int
         + 40 as libc::c_int) as libc::c_uint;
-    (*biomeColor
-        .offset(
-            mutated as isize,
-        ))[1 as libc::c_int
-        as usize] = (if c > 255 as libc::c_int as libc::c_uint {
-        255 as libc::c_int as libc::c_uint
-    } else {
-        c
-    }) as libc::c_uchar;
+    (*biomeColor.offset(mutated as isize))[1 as libc::c_int as usize] =
+        (if c > 255 as libc::c_int as libc::c_uint {
+            255 as libc::c_int as libc::c_uint
+        } else {
+            c
+        }) as libc::c_uchar;
     c = ((*biomeColor.offset(parent as isize))[2 as libc::c_int as usize] as libc::c_int
         + 40 as libc::c_int) as libc::c_uint;
-    (*biomeColor
-        .offset(
-            mutated as isize,
-        ))[2 as libc::c_int
-        as usize] = (if c > 255 as libc::c_int as libc::c_uint {
-        255 as libc::c_int as libc::c_uint
-    } else {
-        c
-    }) as libc::c_uchar;
+    (*biomeColor.offset(mutated as isize))[2 as libc::c_int as usize] =
+        (if c > 255 as libc::c_int as libc::c_uint {
+            255 as libc::c_int as libc::c_uint
+        } else {
+            c
+        }) as libc::c_uchar;
 }
 #[no_mangle]
 pub unsafe extern "C" fn initBiomeColors(mut biomeColors: *mut [libc::c_uchar; 3]) {
@@ -881,15 +871,31 @@ pub unsafe extern "C" fn initBiomeColors(mut biomeColors: *mut [libc::c_uchar; 3
         sunflower_plains as libc::c_int,
         plains as libc::c_int,
     );
-    setMutationColor(biomeColors, desert_lakes as libc::c_int, desert as libc::c_int);
+    setMutationColor(
+        biomeColors,
+        desert_lakes as libc::c_int,
+        desert as libc::c_int,
+    );
     setMutationColor(
         biomeColors,
         gravelly_mountains as libc::c_int,
         mountains as libc::c_int,
     );
-    setMutationColor(biomeColors, flower_forest as libc::c_int, forest as libc::c_int);
-    setMutationColor(biomeColors, taiga_mountains as libc::c_int, taiga as libc::c_int);
-    setMutationColor(biomeColors, swamp_hills as libc::c_int, swamp as libc::c_int);
+    setMutationColor(
+        biomeColors,
+        flower_forest as libc::c_int,
+        forest as libc::c_int,
+    );
+    setMutationColor(
+        biomeColors,
+        taiga_mountains as libc::c_int,
+        taiga as libc::c_int,
+    );
+    setMutationColor(
+        biomeColors,
+        swamp_hills as libc::c_int,
+        swamp as libc::c_int,
+    );
     setBiomeColor(
         biomeColors,
         ice_spikes as libc::c_int,
@@ -897,7 +903,11 @@ pub unsafe extern "C" fn initBiomeColors(mut biomeColors: *mut [libc::c_uchar; 3
         220 as libc::c_int as libc::c_uchar,
         220 as libc::c_int as libc::c_uchar,
     );
-    setMutationColor(biomeColors, modified_jungle as libc::c_int, jungle as libc::c_int);
+    setMutationColor(
+        biomeColors,
+        modified_jungle as libc::c_int,
+        jungle as libc::c_int,
+    );
     setMutationColor(
         biomeColors,
         modified_jungle_edge as libc::c_int,
@@ -1162,7 +1172,8 @@ pub unsafe extern "C" fn parseBiomeColors(
     while *p != 0 {
         ic = 0 as libc::c_int;
         ib = ic;
-        while *p as libc::c_int != 0 && *p as libc::c_int != '\n' as i32
+        while *p as libc::c_int != 0
+            && *p as libc::c_int != '\n' as i32
             && *p as libc::c_int != ';' as i32
         {
             if (ib as size_t).wrapping_add(1 as libc::c_int as libc::c_ulong)
@@ -1174,41 +1185,33 @@ pub unsafe extern "C" fn parseBiomeColors(
                     let fresh0 = ib;
                     ib = ib + 1;
                     bstr[fresh0 as usize] = *p;
-                } else if *p as libc::c_int >= 'A' as i32
-                        && *p as libc::c_int <= 'Z' as i32
-                    {
+                } else if *p as libc::c_int >= 'A' as i32 && *p as libc::c_int <= 'Z' as i32 {
                     let fresh1 = ib;
                     ib = ib + 1;
-                    bstr[fresh1
-                        as usize] = (*p as libc::c_int - 'A' as i32 + 'a' as i32)
-                        as libc::c_char;
+                    bstr[fresh1 as usize] =
+                        (*p as libc::c_int - 'A' as i32 + 'a' as i32) as libc::c_char;
                 }
             }
             if ic < 4 as libc::c_int
                 && (*p as libc::c_int == '#' as i32
                     || *p.offset(0 as libc::c_int as isize) as libc::c_int == '0' as i32
-                        && *p.offset(1 as libc::c_int as isize) as libc::c_int
-                            == 'x' as i32)
+                        && *p.offset(1 as libc::c_int as isize) as libc::c_int == 'x' as i32)
             {
                 let fresh2 = ic;
                 ic = ic + 1;
-                col[fresh2
-                    as usize] = strtol(
-                    p
-                        .offset(1 as libc::c_int as isize)
-                        .offset(
-                            (*p as libc::c_int == '0' as i32) as libc::c_int as isize,
-                        ),
+                col[fresh2 as usize] = strtol(
+                    p.offset(1 as libc::c_int as isize)
+                        .offset((*p as libc::c_int == '0' as i32) as libc::c_int as isize),
                     &mut p as *mut *const libc::c_char as *mut *mut libc::c_char,
                     16 as libc::c_int,
                 ) as libc::c_int;
-            } else if ic < 4 as libc::c_int && *p as libc::c_int >= '0' as i32
-                    && *p as libc::c_int <= '9' as i32
-                {
+            } else if ic < 4 as libc::c_int
+                && *p as libc::c_int >= '0' as i32
+                && *p as libc::c_int <= '9' as i32
+            {
                 let fresh3 = ic;
                 ic = ic + 1;
-                col[fresh3
-                    as usize] = strtol(
+                col[fresh3 as usize] = strtol(
                     p,
                     &mut p as *mut *const libc::c_char as *mut *mut libc::c_char,
                     10 as libc::c_int,
@@ -1229,87 +1232,45 @@ pub unsafe extern "C" fn parseBiomeColors(
         id = _str2id(bstr.as_mut_ptr());
         if id >= 0 as libc::c_int && id < 256 as libc::c_int {
             if ic == 3 as libc::c_int {
-                (*biomeColors
-                    .offset(
-                        id as isize,
-                    ))[0 as libc::c_int
-                    as usize] = (col[0 as libc::c_int as usize] & 0xff as libc::c_int)
-                    as libc::c_uchar;
-                (*biomeColors
-                    .offset(
-                        id as isize,
-                    ))[1 as libc::c_int
-                    as usize] = (col[1 as libc::c_int as usize] & 0xff as libc::c_int)
-                    as libc::c_uchar;
-                (*biomeColors
-                    .offset(
-                        id as isize,
-                    ))[2 as libc::c_int
-                    as usize] = (col[2 as libc::c_int as usize] & 0xff as libc::c_int)
-                    as libc::c_uchar;
+                (*biomeColors.offset(id as isize))[0 as libc::c_int as usize] =
+                    (col[0 as libc::c_int as usize] & 0xff as libc::c_int) as libc::c_uchar;
+                (*biomeColors.offset(id as isize))[1 as libc::c_int as usize] =
+                    (col[1 as libc::c_int as usize] & 0xff as libc::c_int) as libc::c_uchar;
+                (*biomeColors.offset(id as isize))[2 as libc::c_int as usize] =
+                    (col[2 as libc::c_int as usize] & 0xff as libc::c_int) as libc::c_uchar;
                 n += 1;
             } else if ic == 1 as libc::c_int {
-                (*biomeColors
-                    .offset(
-                        id as isize,
-                    ))[0 as libc::c_int
-                    as usize] = (col[0 as libc::c_int as usize] >> 16 as libc::c_int
-                    & 0xff as libc::c_int) as libc::c_uchar;
-                (*biomeColors
-                    .offset(
-                        id as isize,
-                    ))[1 as libc::c_int
-                    as usize] = (col[0 as libc::c_int as usize] >> 8 as libc::c_int
-                    & 0xff as libc::c_int) as libc::c_uchar;
-                (*biomeColors
-                    .offset(
-                        id as isize,
-                    ))[2 as libc::c_int
-                    as usize] = (col[0 as libc::c_int as usize] >> 0 as libc::c_int
-                    & 0xff as libc::c_int) as libc::c_uchar;
+                (*biomeColors.offset(id as isize))[0 as libc::c_int as usize] =
+                    (col[0 as libc::c_int as usize] >> 16 as libc::c_int & 0xff as libc::c_int)
+                        as libc::c_uchar;
+                (*biomeColors.offset(id as isize))[1 as libc::c_int as usize] =
+                    (col[0 as libc::c_int as usize] >> 8 as libc::c_int & 0xff as libc::c_int)
+                        as libc::c_uchar;
+                (*biomeColors.offset(id as isize))[2 as libc::c_int as usize] =
+                    (col[0 as libc::c_int as usize] >> 0 as libc::c_int & 0xff as libc::c_int)
+                        as libc::c_uchar;
                 n += 1;
             }
         } else if ic == 4 as libc::c_int {
             id = col[0 as libc::c_int as usize] & 0xff as libc::c_int;
-            (*biomeColors
-                .offset(
-                    id as isize,
-                ))[0 as libc::c_int
-                as usize] = (col[1 as libc::c_int as usize] & 0xff as libc::c_int)
-                as libc::c_uchar;
-            (*biomeColors
-                .offset(
-                    id as isize,
-                ))[1 as libc::c_int
-                as usize] = (col[2 as libc::c_int as usize] & 0xff as libc::c_int)
-                as libc::c_uchar;
-            (*biomeColors
-                .offset(
-                    id as isize,
-                ))[2 as libc::c_int
-                as usize] = (col[3 as libc::c_int as usize] & 0xff as libc::c_int)
-                as libc::c_uchar;
+            (*biomeColors.offset(id as isize))[0 as libc::c_int as usize] =
+                (col[1 as libc::c_int as usize] & 0xff as libc::c_int) as libc::c_uchar;
+            (*biomeColors.offset(id as isize))[1 as libc::c_int as usize] =
+                (col[2 as libc::c_int as usize] & 0xff as libc::c_int) as libc::c_uchar;
+            (*biomeColors.offset(id as isize))[2 as libc::c_int as usize] =
+                (col[3 as libc::c_int as usize] & 0xff as libc::c_int) as libc::c_uchar;
             n += 1;
         } else if ic == 2 as libc::c_int {
             id = col[0 as libc::c_int as usize] & 0xff as libc::c_int;
-            (*biomeColors
-                .offset(
-                    id as isize,
-                ))[0 as libc::c_int
-                as usize] = (col[1 as libc::c_int as usize] >> 16 as libc::c_int
-                & 0xff as libc::c_int) as libc::c_uchar;
-            (*biomeColors
-                .offset(
-                    id as isize,
-                ))[1 as libc::c_int
-                as usize] = (col[1 as libc::c_int as usize] >> 8 as libc::c_int
-                & 0xff as libc::c_int) as libc::c_uchar;
-            (*biomeColors
-                .offset(
-                    id as isize,
-                ))[2 as libc::c_int
-                as usize] = (col[1 as libc::c_int as usize] >> 0 as libc::c_int
-                & 0xff as libc::c_int) as libc::c_uchar;
+            (*biomeColors.offset(id as isize))[0 as libc::c_int as usize] =
+                (col[1 as libc::c_int as usize] >> 16 as libc::c_int & 0xff as libc::c_int)
+                    as libc::c_uchar;
+            (*biomeColors.offset(id as isize))[1 as libc::c_int as usize] =
+                (col[1 as libc::c_int as usize] >> 8 as libc::c_int & 0xff as libc::c_int)
+                    as libc::c_uchar;
+            (*biomeColors.offset(id as isize))[2 as libc::c_int as usize] =
+                (col[1 as libc::c_int as usize] >> 0 as libc::c_int & 0xff as libc::c_int)
+                    as libc::c_uchar;
             n += 1;
         }
     }
@@ -1332,50 +1293,40 @@ pub unsafe extern "C" fn biomesToImage(
     while j < sy {
         i = 0 as libc::c_int as libc::c_uint;
         while i < sx {
-            let mut id: libc::c_int = *biomes
-                .offset(j.wrapping_mul(sx).wrapping_add(i) as isize);
+            let mut id: libc::c_int = *biomes.offset(j.wrapping_mul(sx).wrapping_add(i) as isize);
             let mut r: libc::c_uint = 0;
             let mut g: libc::c_uint = 0;
             let mut b: libc::c_uint = 0;
             if id < 0 as libc::c_int || id >= 256 as libc::c_int {
                 containsInvalidBiomes = 1 as libc::c_int;
-                r = ((*biomeColors
-                    .offset(
-                        (id & 0x7f as libc::c_int) as isize,
-                    ))[0 as libc::c_int as usize] as libc::c_int - 40 as libc::c_int)
-                    as libc::c_uint;
+                r = ((*biomeColors.offset((id & 0x7f as libc::c_int) as isize))
+                    [0 as libc::c_int as usize] as libc::c_int
+                    - 40 as libc::c_int) as libc::c_uint;
                 r = if r > 0xff as libc::c_int as libc::c_uint {
                     0 as libc::c_int as libc::c_uint
                 } else {
                     r & 0xff as libc::c_int as libc::c_uint
                 };
-                g = ((*biomeColors
-                    .offset(
-                        (id & 0x7f as libc::c_int) as isize,
-                    ))[1 as libc::c_int as usize] as libc::c_int - 40 as libc::c_int)
-                    as libc::c_uint;
+                g = ((*biomeColors.offset((id & 0x7f as libc::c_int) as isize))
+                    [1 as libc::c_int as usize] as libc::c_int
+                    - 40 as libc::c_int) as libc::c_uint;
                 g = if g > 0xff as libc::c_int as libc::c_uint {
                     0 as libc::c_int as libc::c_uint
                 } else {
                     g & 0xff as libc::c_int as libc::c_uint
                 };
-                b = ((*biomeColors
-                    .offset(
-                        (id & 0x7f as libc::c_int) as isize,
-                    ))[2 as libc::c_int as usize] as libc::c_int - 40 as libc::c_int)
-                    as libc::c_uint;
+                b = ((*biomeColors.offset((id & 0x7f as libc::c_int) as isize))
+                    [2 as libc::c_int as usize] as libc::c_int
+                    - 40 as libc::c_int) as libc::c_uint;
                 b = if b > 0xff as libc::c_int as libc::c_uint {
                     0 as libc::c_int as libc::c_uint
                 } else {
                     b & 0xff as libc::c_int as libc::c_uint
                 };
             } else {
-                r = (*biomeColors.offset(id as isize))[0 as libc::c_int as usize]
-                    as libc::c_uint;
-                g = (*biomeColors.offset(id as isize))[1 as libc::c_int as usize]
-                    as libc::c_uint;
-                b = (*biomeColors.offset(id as isize))[2 as libc::c_int as usize]
-                    as libc::c_uint;
+                r = (*biomeColors.offset(id as isize))[0 as libc::c_int as usize] as libc::c_uint;
+                g = (*biomeColors.offset(id as isize))[1 as libc::c_int as usize] as libc::c_uint;
+                b = (*biomeColors.offset(id as isize))[2 as libc::c_int as usize] as libc::c_uint;
             }
             let mut m: libc::c_uint = 0;
             let mut n: libc::c_uint = 0;
@@ -1383,33 +1334,27 @@ pub unsafe extern "C" fn biomesToImage(
             while m < pixscale {
                 n = 0 as libc::c_int as libc::c_uint;
                 while n < pixscale {
-                    let mut idx: libc::c_int = pixscale.wrapping_mul(i).wrapping_add(n)
-                        as libc::c_int;
+                    let mut idx: libc::c_int =
+                        pixscale.wrapping_mul(i).wrapping_add(n) as libc::c_int;
                     if flip != 0 {
-                        idx = (idx as libc::c_uint)
-                            .wrapping_add(
-                                sx
-                                    .wrapping_mul(pixscale)
-                                    .wrapping_mul(pixscale.wrapping_mul(j).wrapping_add(m)),
-                            ) as libc::c_int as libc::c_int;
+                        idx = (idx as libc::c_uint).wrapping_add(
+                            sx.wrapping_mul(pixscale)
+                                .wrapping_mul(pixscale.wrapping_mul(j).wrapping_add(m)),
+                        ) as libc::c_int as libc::c_int;
                     } else {
-                        idx = (idx as libc::c_uint)
-                            .wrapping_add(
-                                sx
-                                    .wrapping_mul(pixscale)
+                        idx = (idx as libc::c_uint).wrapping_add(
+                            sx.wrapping_mul(pixscale).wrapping_mul(
+                                pixscale
                                     .wrapping_mul(
-                                        pixscale
-                                            .wrapping_mul(
-                                                sy
-                                                    .wrapping_sub(1 as libc::c_int as libc::c_uint)
-                                                    .wrapping_sub(j),
-                                            )
-                                            .wrapping_add(m),
-                                    ),
-                            ) as libc::c_int as libc::c_int;
+                                        sy.wrapping_sub(1 as libc::c_int as libc::c_uint)
+                                            .wrapping_sub(j),
+                                    )
+                                    .wrapping_add(m),
+                            ),
+                        ) as libc::c_int as libc::c_int;
                     }
-                    let mut pix: *mut libc::c_uchar = pixels
-                        .offset((3 as libc::c_int * idx) as isize);
+                    let mut pix: *mut libc::c_uchar =
+                        pixels.offset((3 as libc::c_int * idx) as isize);
                     *pix.offset(0 as libc::c_int as isize) = r as libc::c_uchar;
                     *pix.offset(1 as libc::c_int as isize) = g as libc::c_uchar;
                     *pix.offset(2 as libc::c_int as isize) = b as libc::c_uchar;
@@ -1434,7 +1379,12 @@ pub unsafe extern "C" fn savePPM(
     if fp.is_null() {
         return -(1 as libc::c_int);
     }
-    fprintf(fp, b"P6\n%d %d\n255\n\0" as *const u8 as *const libc::c_char, sx, sy);
+    fprintf(
+        fp,
+        b"P6\n%d %d\n255\n\0" as *const u8 as *const libc::c_char,
+        sx,
+        sy,
+    );
     let mut pixelsLen: size_t = (3 as libc::c_int as libc::c_uint)
         .wrapping_mul(sx)
         .wrapping_mul(sy) as size_t;

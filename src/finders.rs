@@ -1,4 +1,12 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![allow(
+    dead_code,
+    mutable_transmutes,
+    non_camel_case_types,
+    non_snake_case,
+    non_upper_case_globals,
+    unused_assignments,
+    unused_mut
+)]
 #![register_tool(c2rust)]
 #![feature(extern_types, register_tool)]
 extern "C" {
@@ -35,23 +43,11 @@ extern "C" {
         _: libc::c_ulong,
         _: *mut FILE,
     ) -> libc::c_ulong;
-    fn fseek(
-        __stream: *mut FILE,
-        __off: libc::c_long,
-        __whence: libc::c_int,
-    ) -> libc::c_int;
+    fn fseek(__stream: *mut FILE, __off: libc::c_long, __whence: libc::c_int) -> libc::c_int;
     fn rewind(__stream: *mut FILE);
     fn feof(__stream: *mut FILE) -> libc::c_int;
-    fn memcpy(
-        _: *mut libc::c_void,
-        _: *const libc::c_void,
-        _: libc::c_ulong,
-    ) -> *mut libc::c_void;
-    fn memset(
-        _: *mut libc::c_void,
-        _: libc::c_int,
-        _: libc::c_ulong,
-    ) -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
     fn strcpy(_: *mut libc::c_char, _: *const libc::c_char) -> *mut libc::c_char;
     fn strlen(_: *const libc::c_char) -> libc::c_ulong;
     fn mapBiome(
@@ -101,11 +97,7 @@ extern "C" {
         areaWidth: libc::c_int,
         areaHeight: libc::c_int,
     ) -> libc::c_int;
-    fn getMinLayerCacheSize(
-        layer: *const Layer,
-        sizeX: libc::c_int,
-        sizeZ: libc::c_int,
-    ) -> size_t;
+    fn getMinLayerCacheSize(layer: *const Layer, sizeX: libc::c_int, sizeZ: libc::c_int) -> size_t;
     fn getLayerForScale(g: *const Generator, scale: libc::c_int) -> *const Layer;
     fn getBiomeAt(
         g: *const Generator,
@@ -128,16 +120,11 @@ extern "C" {
     fn pthread_create(
         __newthread: *mut pthread_t,
         __attr: *const pthread_attr_t,
-        __start_routine: Option::<
-            unsafe extern "C" fn(*mut libc::c_void) -> *mut libc::c_void,
-        >,
+        __start_routine: Option<unsafe extern "C" fn(*mut libc::c_void) -> *mut libc::c_void>,
         __arg: *mut libc::c_void,
     ) -> libc::c_int;
     fn pthread_exit(__retval: *mut libc::c_void) -> !;
-    fn pthread_join(
-        __th: pthread_t,
-        __thread_return: *mut *mut libc::c_void,
-    ) -> libc::c_int;
+    fn pthread_join(__th: pthread_t, __thread_return: *mut *mut libc::c_void) -> libc::c_int;
     fn abs(_: libc::c_int) -> libc::c_int;
     fn malloc(_: libc::c_ulong) -> *mut libc::c_void;
     fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
@@ -501,7 +488,7 @@ pub struct Range {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct Layer {
-    pub getMap: Option::<mapfunc_t>,
+    pub getMap: Option<mapfunc_t>,
     pub mc: int8_t,
     pub zoom: int8_t,
     pub edge: int8_t,
@@ -783,9 +770,7 @@ pub struct threadinfo_t {
     pub lowBits: *const uint64_t,
     pub lowBitCnt: libc::c_int,
     pub lowBitN: libc::c_int,
-    pub check: Option::<
-        unsafe extern "C" fn(uint64_t, *mut libc::c_void) -> libc::c_int,
-    >,
+    pub check: Option<unsafe extern "C" fn(uint64_t, *mut libc::c_void) -> libc::c_int>,
     pub data: *mut libc::c_void,
     pub path: [libc::c_char; 4096],
     pub fp: *mut FILE,
@@ -864,7 +849,7 @@ pub struct gdt_info_t {
 #[repr(C)]
 pub struct filter_data_t {
     pub bf: *const BiomeFilter,
-    pub map: Option::<
+    pub map: Option<
         unsafe extern "C" fn(
             *const Layer,
             *mut libc::c_int,
@@ -943,17 +928,14 @@ unsafe extern "C" fn getChunkSeed(
     return cs;
 }
 #[inline]
-unsafe extern "C" fn mcFirstIsZero(
-    mut s: uint64_t,
-    mut mod_0: libc::c_int,
-) -> libc::c_int {
+unsafe extern "C" fn mcFirstIsZero(mut s: uint64_t, mut mod_0: libc::c_int) -> libc::c_int {
     return (((s as int64_t >> 24 as libc::c_int) % mod_0 as libc::c_long) as libc::c_int
         == 0 as libc::c_int) as libc::c_int;
 }
 #[inline]
 unsafe extern "C" fn mcFirstInt(mut s: uint64_t, mut mod_0: libc::c_int) -> libc::c_int {
-    let mut ret: libc::c_int = ((s as int64_t >> 24 as libc::c_int)
-        % mod_0 as libc::c_long) as libc::c_int;
+    let mut ret: libc::c_int =
+        ((s as int64_t >> 24 as libc::c_int) % mod_0 as libc::c_long) as libc::c_int;
     if ret < 0 as libc::c_int {
         ret += mod_0;
     }
@@ -975,8 +957,7 @@ unsafe extern "C" fn xNextIntJ(mut xr: *mut Xoroshiro, mut n: uint32_t) -> libc:
     let mut val: libc::c_int = 0;
     let m: libc::c_int = n.wrapping_sub(1 as libc::c_int as libc::c_uint) as libc::c_int;
     if m as libc::c_uint & n == 0 as libc::c_int as libc::c_uint {
-        let mut x: uint64_t = (n as libc::c_ulong)
-            .wrapping_mul(xNextLong(xr) >> 33 as libc::c_int);
+        let mut x: uint64_t = (n as libc::c_ulong).wrapping_mul(xNextLong(xr) >> 33 as libc::c_int);
         return (x as int64_t >> 31 as libc::c_int) as libc::c_int;
     }
     loop {
@@ -1002,8 +983,7 @@ unsafe extern "C" fn xNextFloat(mut xr: *mut Xoroshiro) -> libc::c_float {
 unsafe extern "C" fn xNextLong(mut xr: *mut Xoroshiro) -> uint64_t {
     let mut l: uint64_t = (*xr).lo;
     let mut h: uint64_t = (*xr).hi;
-    let mut n: uint64_t = (rotl64(l.wrapping_add(h), 17 as libc::c_int as uint8_t))
-        .wrapping_add(l);
+    let mut n: uint64_t = (rotl64(l.wrapping_add(h), 17 as libc::c_int as uint8_t)).wrapping_add(l);
     h ^= l;
     (*xr).lo = rotl64(l, 49 as libc::c_int as uint8_t) ^ h ^ h << 21 as libc::c_int;
     (*xr).hi = rotl64(h, 28 as libc::c_int as uint8_t);
@@ -1039,13 +1019,14 @@ unsafe extern "C" fn skipNextN(mut seed: *mut uint64_t, mut n: uint64_t) {
             m = (m as libc::c_ulong).wrapping_mul(im) as uint64_t as uint64_t;
             a = im.wrapping_mul(a).wrapping_add(ia);
         }
-        ia = im.wrapping_add(1 as libc::c_int as libc::c_ulong).wrapping_mul(ia);
+        ia = im
+            .wrapping_add(1 as libc::c_int as libc::c_ulong)
+            .wrapping_mul(ia);
         im = (im as libc::c_ulong).wrapping_mul(im) as uint64_t as uint64_t;
         k >>= 1 as libc::c_int;
     }
     *seed = (*seed).wrapping_mul(m).wrapping_add(a);
-    *seed = (*seed as libc::c_ulonglong & 0xffffffffffff as libc::c_ulonglong)
-        as uint64_t;
+    *seed = (*seed as libc::c_ulonglong & 0xffffffffffff as libc::c_ulonglong) as uint64_t;
 }
 #[inline]
 unsafe extern "C" fn nextDouble(mut seed: *mut uint64_t) -> libc::c_double {
@@ -1063,8 +1044,11 @@ unsafe extern "C" fn nextFloat(mut seed: *mut uint64_t) -> libc::c_float {
 }
 #[inline]
 unsafe extern "C" fn nextLong(mut seed: *mut uint64_t) -> uint64_t {
-    return ((next(seed, 32 as libc::c_int) as uint64_t) << 32 as libc::c_int)
-        .wrapping_add(next(seed, 32 as libc::c_int) as libc::c_ulong);
+    return ((next(seed, 32 as libc::c_int) as uint64_t) << 32 as libc::c_int).wrapping_add(next(
+        seed,
+        32 as libc::c_int,
+    )
+        as libc::c_ulong);
 }
 #[inline]
 unsafe extern "C" fn nextInt(mut seed: *mut uint64_t, n: libc::c_int) -> libc::c_int {
@@ -1072,8 +1056,8 @@ unsafe extern "C" fn nextInt(mut seed: *mut uint64_t, n: libc::c_int) -> libc::c
     let mut val: libc::c_int = 0;
     let m: libc::c_int = n - 1 as libc::c_int;
     if m & n == 0 as libc::c_int {
-        let mut x: uint64_t = (n as libc::c_ulong)
-            .wrapping_mul(next(seed, 31 as libc::c_int) as uint64_t);
+        let mut x: uint64_t =
+            (n as libc::c_ulong).wrapping_mul(next(seed, 31 as libc::c_int) as uint64_t);
         return (x as int64_t >> 31 as libc::c_int) as libc::c_int;
     }
     loop {
@@ -1112,8 +1096,8 @@ unsafe extern "C" fn isQuadBaseFeature24(
     mut ay: libc::c_int,
     mut az: libc::c_int,
 ) -> libc::c_float {
-    seed = (seed as libc::c_ulong).wrapping_add(sconf.salt as libc::c_ulong) as uint64_t
-        as uint64_t;
+    seed =
+        (seed as libc::c_ulong).wrapping_add(sconf.salt as libc::c_ulong) as uint64_t as uint64_t;
     let mut s00: uint64_t = seed;
     let mut s11: uint64_t = (341873128712 as libc::c_ulonglong)
         .wrapping_add(132897987541 as libc::c_ulonglong)
@@ -1132,8 +1116,8 @@ unsafe extern "C" fn isQuadBaseFeature24(
     s00 ^= K;
     let mut a: uint64_t = ((1 as libc::c_ulonglong) << 48 as libc::c_int)
         .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
-    let mut c: uint64_t = (0x5deece66d as libc::c_ulonglong)
-        .wrapping_mul(s00 as libc::c_ulonglong) as uint64_t;
+    let mut c: uint64_t =
+        (0x5deece66d as libc::c_ulonglong).wrapping_mul(s00 as libc::c_ulonglong) as uint64_t;
     c = (c as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong) as uint64_t
         as uint64_t;
     a &= c;
@@ -1146,51 +1130,51 @@ unsafe extern "C" fn isQuadBaseFeature24(
         return 0 as libc::c_int as libc::c_float;
     }
     let mut a_0: uint64_t = ((1 as libc::c_ulonglong) << 48 as libc::c_int)
-        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
-    let mut c_0: uint64_t = (0x5deece66d as libc::c_ulonglong)
-        .wrapping_mul(s00 as libc::c_ulonglong) as uint64_t;
-    c_0 = (c_0 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong)
-        as uint64_t as uint64_t;
+        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong)
+        as uint64_t;
+    let mut c_0: uint64_t =
+        (0x5deece66d as libc::c_ulonglong).wrapping_mul(s00 as libc::c_ulonglong) as uint64_t;
+    c_0 = (c_0 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong) as uint64_t
+        as uint64_t;
     a_0 &= c_0;
     s00 = a_0;
     a_0 = (a_0 as int64_t >> 17 as libc::c_int) as uint64_t;
     c_0 = (0xaaaaaaab as libc::c_uint as libc::c_ulong).wrapping_mul(a_0);
     c_0 = (c_0 as int64_t >> 36 as libc::c_int) as uint64_t;
-    z0 = a_0 as libc::c_int
-        - (c_0 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
+    z0 = a_0 as libc::c_int - (c_0 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
     if (z0 < 20 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return 0 as libc::c_int as libc::c_float;
     }
     s11 ^= K;
     let mut a_1: uint64_t = ((1 as libc::c_ulonglong) << 48 as libc::c_int)
-        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
-    let mut c_1: uint64_t = (0x5deece66d as libc::c_ulonglong)
-        .wrapping_mul(s11 as libc::c_ulonglong) as uint64_t;
-    c_1 = (c_1 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong)
-        as uint64_t as uint64_t;
+        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong)
+        as uint64_t;
+    let mut c_1: uint64_t =
+        (0x5deece66d as libc::c_ulonglong).wrapping_mul(s11 as libc::c_ulonglong) as uint64_t;
+    c_1 = (c_1 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong) as uint64_t
+        as uint64_t;
     a_1 &= c_1;
     s11 = a_1;
     a_1 = (a_1 as int64_t >> 17 as libc::c_int) as uint64_t;
     c_1 = (0xaaaaaaab as libc::c_uint as libc::c_ulong).wrapping_mul(a_1);
     c_1 = (c_1 as int64_t >> 36 as libc::c_int) as uint64_t;
-    x1 = a_1 as libc::c_int
-        - (c_1 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
+    x1 = a_1 as libc::c_int - (c_1 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
     if (x1 > x0 - 20 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return 0 as libc::c_int as libc::c_float;
     }
     let mut a_2: uint64_t = ((1 as libc::c_ulonglong) << 48 as libc::c_int)
-        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
-    let mut c_2: uint64_t = (0x5deece66d as libc::c_ulonglong)
-        .wrapping_mul(s11 as libc::c_ulonglong) as uint64_t;
-    c_2 = (c_2 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong)
-        as uint64_t as uint64_t;
+        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong)
+        as uint64_t;
+    let mut c_2: uint64_t =
+        (0x5deece66d as libc::c_ulonglong).wrapping_mul(s11 as libc::c_ulonglong) as uint64_t;
+    c_2 = (c_2 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong) as uint64_t
+        as uint64_t;
     a_2 &= c_2;
     s11 = a_2;
     a_2 = (a_2 as int64_t >> 17 as libc::c_int) as uint64_t;
     c_2 = (0xaaaaaaab as libc::c_uint as libc::c_ulong).wrapping_mul(a_2);
     c_2 = (c_2 as int64_t >> 36 as libc::c_int) as uint64_t;
-    z1 = a_2 as libc::c_int
-        - (c_2 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
+    z1 = a_2 as libc::c_int - (c_2 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
     if (z1 > z0 - 20 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return 0 as libc::c_int as libc::c_float;
     }
@@ -1199,73 +1183,73 @@ unsafe extern "C" fn isQuadBaseFeature24(
     if x * x + z * z > 255 as libc::c_int {
         return 0 as libc::c_int as libc::c_float;
     }
-    let mut s01: uint64_t = (341873128712 as libc::c_ulonglong)
-        .wrapping_add(seed as libc::c_ulonglong) as uint64_t;
-    let mut s10: uint64_t = (132897987541 as libc::c_ulonglong)
-        .wrapping_add(seed as libc::c_ulonglong) as uint64_t;
+    let mut s01: uint64_t =
+        (341873128712 as libc::c_ulonglong).wrapping_add(seed as libc::c_ulonglong) as uint64_t;
+    let mut s10: uint64_t =
+        (132897987541 as libc::c_ulonglong).wrapping_add(seed as libc::c_ulonglong) as uint64_t;
     s01 ^= K;
     let mut a_3: uint64_t = ((1 as libc::c_ulonglong) << 48 as libc::c_int)
-        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
-    let mut c_3: uint64_t = (0x5deece66d as libc::c_ulonglong)
-        .wrapping_mul(s01 as libc::c_ulonglong) as uint64_t;
-    c_3 = (c_3 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong)
-        as uint64_t as uint64_t;
+        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong)
+        as uint64_t;
+    let mut c_3: uint64_t =
+        (0x5deece66d as libc::c_ulonglong).wrapping_mul(s01 as libc::c_ulonglong) as uint64_t;
+    c_3 = (c_3 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong) as uint64_t
+        as uint64_t;
     a_3 &= c_3;
     s01 = a_3;
     a_3 = (a_3 as int64_t >> 17 as libc::c_int) as uint64_t;
     c_3 = (0xaaaaaaab as libc::c_uint as libc::c_ulong).wrapping_mul(a_3);
     c_3 = (c_3 as int64_t >> 36 as libc::c_int) as uint64_t;
-    x2 = a_3 as libc::c_int
-        - (c_3 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
+    x2 = a_3 as libc::c_int - (c_3 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
     if (x2 >= 4 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return 0 as libc::c_int as libc::c_float;
     }
     let mut a_4: uint64_t = ((1 as libc::c_ulonglong) << 48 as libc::c_int)
-        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
-    let mut c_4: uint64_t = (0x5deece66d as libc::c_ulonglong)
-        .wrapping_mul(s01 as libc::c_ulonglong) as uint64_t;
-    c_4 = (c_4 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong)
-        as uint64_t as uint64_t;
+        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong)
+        as uint64_t;
+    let mut c_4: uint64_t =
+        (0x5deece66d as libc::c_ulonglong).wrapping_mul(s01 as libc::c_ulonglong) as uint64_t;
+    c_4 = (c_4 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong) as uint64_t
+        as uint64_t;
     a_4 &= c_4;
     s01 = a_4;
     a_4 = (a_4 as int64_t >> 17 as libc::c_int) as uint64_t;
     c_4 = (0xaaaaaaab as libc::c_uint as libc::c_ulong).wrapping_mul(a_4);
     c_4 = (c_4 as int64_t >> 36 as libc::c_int) as uint64_t;
-    z2 = a_4 as libc::c_int
-        - (c_4 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
+    z2 = a_4 as libc::c_int - (c_4 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
     if (z2 < 20 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return 0 as libc::c_int as libc::c_float;
     }
     s10 ^= K;
     let mut a_5: uint64_t = ((1 as libc::c_ulonglong) << 48 as libc::c_int)
-        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
-    let mut c_5: uint64_t = (0x5deece66d as libc::c_ulonglong)
-        .wrapping_mul(s10 as libc::c_ulonglong) as uint64_t;
-    c_5 = (c_5 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong)
-        as uint64_t as uint64_t;
+        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong)
+        as uint64_t;
+    let mut c_5: uint64_t =
+        (0x5deece66d as libc::c_ulonglong).wrapping_mul(s10 as libc::c_ulonglong) as uint64_t;
+    c_5 = (c_5 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong) as uint64_t
+        as uint64_t;
     a_5 &= c_5;
     s10 = a_5;
     a_5 = (a_5 as int64_t >> 17 as libc::c_int) as uint64_t;
     c_5 = (0xaaaaaaab as libc::c_uint as libc::c_ulong).wrapping_mul(a_5);
     c_5 = (c_5 as int64_t >> 36 as libc::c_int) as uint64_t;
-    x3 = a_5 as libc::c_int
-        - (c_5 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
+    x3 = a_5 as libc::c_int - (c_5 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
     if (x3 < 20 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return 0 as libc::c_int as libc::c_float;
     }
     let mut a_6: uint64_t = ((1 as libc::c_ulonglong) << 48 as libc::c_int)
-        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
-    let mut c_6: uint64_t = (0x5deece66d as libc::c_ulonglong)
-        .wrapping_mul(s10 as libc::c_ulonglong) as uint64_t;
-    c_6 = (c_6 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong)
-        as uint64_t as uint64_t;
+        .wrapping_sub(1 as libc::c_int as libc::c_ulonglong)
+        as uint64_t;
+    let mut c_6: uint64_t =
+        (0x5deece66d as libc::c_ulonglong).wrapping_mul(s10 as libc::c_ulonglong) as uint64_t;
+    c_6 = (c_6 as libc::c_ulong).wrapping_add(11 as libc::c_int as libc::c_ulong) as uint64_t
+        as uint64_t;
     a_6 &= c_6;
     s10 = a_6;
     a_6 = (a_6 as int64_t >> 17 as libc::c_int) as uint64_t;
     c_6 = (0xaaaaaaab as libc::c_uint as libc::c_ulong).wrapping_mul(a_6);
     c_6 = (c_6 as int64_t >> 36 as libc::c_int) as uint64_t;
-    z3 = a_6 as libc::c_int
-        - (c_6 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
+    z3 = a_6 as libc::c_int - (c_6 << 3 as libc::c_int) as libc::c_int * 3 as libc::c_int;
     if (z3 >= 4 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return 0 as libc::c_int as libc::c_float;
     }
@@ -1304,8 +1288,8 @@ unsafe extern "C" fn isQuadBaseFeature(
     mut az: libc::c_int,
     mut radius: libc::c_int,
 ) -> libc::c_float {
-    seed = (seed as libc::c_ulong).wrapping_add(sconf.salt as libc::c_ulong) as uint64_t
-        as uint64_t;
+    seed =
+        (seed as libc::c_ulong).wrapping_add(sconf.salt as libc::c_ulong) as uint64_t as uint64_t;
     let mut s00: uint64_t = seed;
     let mut s11: uint64_t = (341873128712 as libc::c_ulonglong)
         .wrapping_add(132897987541 as libc::c_ulonglong)
@@ -1327,11 +1311,9 @@ unsafe extern "C" fn isQuadBaseFeature(
     let R: libc::c_int = sconf.regionSize as libc::c_int;
     let C: libc::c_int = sconf.chunkRange as libc::c_int;
     let mut cd: libc::c_int = radius / 8 as libc::c_int;
-    let mut rm: libc::c_int = R
-        - sqrtf(
-            (cd * cd - (R - C + 1 as libc::c_int) * (R - C + 1 as libc::c_int))
-                as libc::c_float,
-        ) as libc::c_int;
+    let mut rm: libc::c_int = R - sqrtf(
+        (cd * cd - (R - C + 1 as libc::c_int) * (R - C + 1 as libc::c_int)) as libc::c_float,
+    ) as libc::c_int;
     let mut s: uint64_t = 0;
     s = s00 ^ K;
     s = s.wrapping_mul(K).wrapping_add(b) & M;
@@ -1360,10 +1342,10 @@ unsafe extern "C" fn isQuadBaseFeature(
     if (x * x + z * z > cd * cd) as libc::c_int as libc::c_long != 0 {
         return 0 as libc::c_int as libc::c_float;
     }
-    let mut s01: uint64_t = (341873128712 as libc::c_ulonglong)
-        .wrapping_add(seed as libc::c_ulonglong) as uint64_t;
-    let mut s10: uint64_t = (132897987541 as libc::c_ulonglong)
-        .wrapping_add(seed as libc::c_ulonglong) as uint64_t;
+    let mut s01: uint64_t =
+        (341873128712 as libc::c_ulonglong).wrapping_add(seed as libc::c_ulonglong) as uint64_t;
+    let mut s10: uint64_t =
+        (132897987541 as libc::c_ulonglong).wrapping_add(seed as libc::c_ulonglong) as uint64_t;
     s = s01 ^ K;
     s = s.wrapping_mul(K).wrapping_add(b) & M;
     x2 = (s >> 17 as libc::c_int) as libc::c_int % C;
@@ -1490,21 +1472,21 @@ unsafe extern "C" fn isQuadBaseLarge(
         .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
     let K: uint64_t = 0x5deece66d as libc::c_ulonglong as uint64_t;
     let b: uint64_t = 0xb as libc::c_int as uint64_t;
-    seed = (seed as libc::c_ulong).wrapping_add(sconf.salt as libc::c_ulong) as uint64_t
-        as uint64_t;
+    seed =
+        (seed as libc::c_ulong).wrapping_add(sconf.salt as libc::c_ulong) as uint64_t as uint64_t;
     let mut s00: uint64_t = seed;
-    let mut s01: uint64_t = (341873128712 as libc::c_ulonglong)
-        .wrapping_add(seed as libc::c_ulonglong) as uint64_t;
-    let mut s10: uint64_t = (132897987541 as libc::c_ulonglong)
-        .wrapping_add(seed as libc::c_ulonglong) as uint64_t;
+    let mut s01: uint64_t =
+        (341873128712 as libc::c_ulonglong).wrapping_add(seed as libc::c_ulonglong) as uint64_t;
+    let mut s10: uint64_t =
+        (132897987541 as libc::c_ulonglong).wrapping_add(seed as libc::c_ulonglong) as uint64_t;
     let mut s11: uint64_t = (341873128712 as libc::c_ulonglong)
         .wrapping_add(132897987541 as libc::c_ulonglong)
         .wrapping_add(seed as libc::c_ulonglong) as uint64_t;
     let R: libc::c_int = sconf.regionSize as libc::c_int;
     let C: libc::c_int = sconf.chunkRange as libc::c_int;
     let mut rm: libc::c_int = 2 as libc::c_int * R
-        + ((if ax < az { ax } else { az }) - 2 as libc::c_int * radius
-            + 7 as libc::c_int) / 8 as libc::c_int;
+        + ((if ax < az { ax } else { az }) - 2 as libc::c_int * radius + 7 as libc::c_int)
+            / 8 as libc::c_int;
     let mut s: uint64_t = 0;
     let mut p: libc::c_int = 0;
     let mut x0: libc::c_int = 0;
@@ -1551,10 +1533,9 @@ unsafe extern "C" fn isQuadBaseLarge(
     z1 = p;
     s = ((x1 - x0 >> 1 as libc::c_int) * (x1 - x0 >> 1 as libc::c_int)
         + (z1 - z0 >> 1 as libc::c_int) * (z1 - z0 >> 1 as libc::c_int)) as uint64_t;
-    if s
-        > (4 as libc::c_int as uint64_t)
-            .wrapping_mul(radius as libc::c_ulong)
-            .wrapping_mul(radius as libc::c_ulong)
+    if s > (4 as libc::c_int as uint64_t)
+        .wrapping_mul(radius as libc::c_ulong)
+        .wrapping_mul(radius as libc::c_ulong)
     {
         return 0 as libc::c_int as libc::c_float;
     }
@@ -1628,7 +1609,7 @@ unsafe extern "C" fn isQuadBase(
                     7 as libc::c_int + 1 as libc::c_int,
                     7 as libc::c_int + 1 as libc::c_int,
                     9 as libc::c_int + 1 as libc::c_int,
-                )
+                );
             } else {
                 return isQuadBaseFeature(
                     sconf,
@@ -1637,7 +1618,7 @@ unsafe extern "C" fn isQuadBase(
                     7 as libc::c_int + 1 as libc::c_int,
                     9 as libc::c_int + 1 as libc::c_int,
                     radius,
-                )
+                );
             }
         }
         1 | 2 | 4 | 5 => {
@@ -1648,7 +1629,7 @@ unsafe extern "C" fn isQuadBase(
                     0 as libc::c_int,
                     0 as libc::c_int,
                     0 as libc::c_int,
-                )
+                );
             } else {
                 return isQuadBaseFeature(
                     sconf,
@@ -1657,7 +1638,7 @@ unsafe extern "C" fn isQuadBase(
                     0 as libc::c_int,
                     0 as libc::c_int,
                     radius,
-                )
+                );
             }
         }
         10 => {
@@ -1704,28 +1685,18 @@ unsafe extern "C" fn getLargeStructureChunkInRegion(
         .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
     let b: uint64_t = 0xb as libc::c_int as uint64_t;
     seed = (seed as libc::c_ulonglong)
-        .wrapping_add(
-            (regX as libc::c_ulonglong).wrapping_mul(341873128712 as libc::c_ulonglong),
-        )
-        .wrapping_add(
-            (regZ as libc::c_ulonglong).wrapping_mul(132897987541 as libc::c_ulonglong),
-        )
+        .wrapping_add((regX as libc::c_ulonglong).wrapping_mul(341873128712 as libc::c_ulonglong))
+        .wrapping_add((regZ as libc::c_ulonglong).wrapping_mul(132897987541 as libc::c_ulonglong))
         .wrapping_add(config.salt as libc::c_ulonglong) as uint64_t;
     seed = seed ^ K;
     seed = seed.wrapping_mul(K).wrapping_add(b) & M;
-    pos
-        .x = (seed >> 17 as libc::c_int) as libc::c_int
-        % config.chunkRange as libc::c_int;
+    pos.x = (seed >> 17 as libc::c_int) as libc::c_int % config.chunkRange as libc::c_int;
     seed = seed.wrapping_mul(K).wrapping_add(b) & M;
-    pos.x
-        += (seed >> 17 as libc::c_int) as libc::c_int % config.chunkRange as libc::c_int;
+    pos.x += (seed >> 17 as libc::c_int) as libc::c_int % config.chunkRange as libc::c_int;
     seed = seed.wrapping_mul(K).wrapping_add(b) & M;
-    pos
-        .z = (seed >> 17 as libc::c_int) as libc::c_int
-        % config.chunkRange as libc::c_int;
+    pos.z = (seed >> 17 as libc::c_int) as libc::c_int % config.chunkRange as libc::c_int;
     seed = seed.wrapping_mul(K).wrapping_add(b) & M;
-    pos.z
-        += (seed >> 17 as libc::c_int) as libc::c_int % config.chunkRange as libc::c_int;
+    pos.z += (seed >> 17 as libc::c_int) as libc::c_int % config.chunkRange as libc::c_int;
     pos.x >>= 1 as libc::c_int;
     pos.z >>= 1 as libc::c_int;
     return pos;
@@ -1738,14 +1709,14 @@ unsafe extern "C" fn getLargeStructurePos(
     mut regZ: libc::c_int,
 ) -> Pos {
     let mut pos: Pos = getLargeStructureChunkInRegion(config, seed, regX, regZ);
-    pos
-        .x = ((regX as uint64_t)
+    pos.x = ((regX as uint64_t)
         .wrapping_mul(config.regionSize as libc::c_ulong)
-        .wrapping_add(pos.x as libc::c_ulong) << 4 as libc::c_int) as libc::c_int;
-    pos
-        .z = ((regZ as uint64_t)
+        .wrapping_add(pos.x as libc::c_ulong)
+        << 4 as libc::c_int) as libc::c_int;
+    pos.z = ((regZ as uint64_t)
         .wrapping_mul(config.regionSize as libc::c_ulong)
-        .wrapping_add(pos.z as libc::c_ulong) << 4 as libc::c_int) as libc::c_int;
+        .wrapping_add(pos.z as libc::c_ulong)
+        << 4 as libc::c_int) as libc::c_int;
     return pos;
 }
 #[inline]
@@ -1761,32 +1732,22 @@ unsafe extern "C" fn getFeatureChunkInRegion(
         .wrapping_sub(1 as libc::c_int as libc::c_ulonglong) as uint64_t;
     let b: uint64_t = 0xb as libc::c_int as uint64_t;
     seed = (seed as libc::c_ulonglong)
-        .wrapping_add(
-            (regX as libc::c_ulonglong).wrapping_mul(341873128712 as libc::c_ulonglong),
-        )
-        .wrapping_add(
-            (regZ as libc::c_ulonglong).wrapping_mul(132897987541 as libc::c_ulonglong),
-        )
+        .wrapping_add((regX as libc::c_ulonglong).wrapping_mul(341873128712 as libc::c_ulonglong))
+        .wrapping_add((regZ as libc::c_ulonglong).wrapping_mul(132897987541 as libc::c_ulonglong))
         .wrapping_add(config.salt as libc::c_ulonglong) as uint64_t;
     seed = seed ^ K;
     seed = seed.wrapping_mul(K).wrapping_add(b) & M;
     let mut r: uint64_t = config.chunkRange as uint64_t;
     if r & r.wrapping_sub(1 as libc::c_int as libc::c_ulong) != 0 {
-        pos
-            .x = ((seed >> 17 as libc::c_int) as libc::c_int as libc::c_ulong)
-            .wrapping_rem(r) as libc::c_int;
+        pos.x = ((seed >> 17 as libc::c_int) as libc::c_int as libc::c_ulong).wrapping_rem(r)
+            as libc::c_int;
         seed = seed.wrapping_mul(K).wrapping_add(b) & M;
-        pos
-            .z = ((seed >> 17 as libc::c_int) as libc::c_int as libc::c_ulong)
-            .wrapping_rem(r) as libc::c_int;
+        pos.z = ((seed >> 17 as libc::c_int) as libc::c_int as libc::c_ulong).wrapping_rem(r)
+            as libc::c_int;
     } else {
-        pos
-            .x = (r.wrapping_mul(seed >> 17 as libc::c_int) >> 31 as libc::c_int)
-            as libc::c_int;
+        pos.x = (r.wrapping_mul(seed >> 17 as libc::c_int) >> 31 as libc::c_int) as libc::c_int;
         seed = seed.wrapping_mul(K).wrapping_add(b) & M;
-        pos
-            .z = (r.wrapping_mul(seed >> 17 as libc::c_int) >> 31 as libc::c_int)
-            as libc::c_int;
+        pos.z = (r.wrapping_mul(seed >> 17 as libc::c_int) >> 31 as libc::c_int) as libc::c_int;
     }
     return pos;
 }
@@ -1798,14 +1759,14 @@ unsafe extern "C" fn getFeaturePos(
     mut regZ: libc::c_int,
 ) -> Pos {
     let mut pos: Pos = getFeatureChunkInRegion(config, seed, regX, regZ);
-    pos
-        .x = ((regX as uint64_t)
+    pos.x = ((regX as uint64_t)
         .wrapping_mul(config.regionSize as libc::c_ulong)
-        .wrapping_add(pos.x as libc::c_ulong) << 4 as libc::c_int) as libc::c_int;
-    pos
-        .z = ((regZ as uint64_t)
+        .wrapping_add(pos.x as libc::c_ulong)
+        << 4 as libc::c_int) as libc::c_int;
+    pos.z = ((regZ as uint64_t)
         .wrapping_mul(config.regionSize as libc::c_ulong)
-        .wrapping_add(pos.z as libc::c_ulong) << 4 as libc::c_int) as libc::c_int;
+        .wrapping_add(pos.z as libc::c_ulong)
+        << 4 as libc::c_int) as libc::c_int;
     return pos;
 }
 #[inline]
@@ -1817,7 +1778,8 @@ unsafe extern "C" fn chunkGenerateRnd(
     let mut rnd: uint64_t = 0;
     setSeed(&mut rnd, worldSeed);
     rnd = (nextLong(&mut rnd)).wrapping_mul(chunkX as libc::c_ulong)
-        ^ (nextLong(&mut rnd)).wrapping_mul(chunkZ as libc::c_ulong) ^ worldSeed;
+        ^ (nextLong(&mut rnd)).wrapping_mul(chunkZ as libc::c_ulong)
+        ^ worldSeed;
     setSeed(&mut rnd, rnd);
     return rnd;
 }
@@ -1828,12 +1790,9 @@ unsafe extern "C" fn moveStructure(
     mut regZ: libc::c_int,
 ) -> uint64_t {
     return baseSeed
-        .wrapping_sub(
-            (regX as libc::c_long * 341873128712 as libc::c_long) as libc::c_ulong,
-        )
-        .wrapping_sub(
-            (regZ as libc::c_long * 132897987541 as libc::c_long) as libc::c_ulong,
-        ) & 0xffffffffffff as libc::c_long as libc::c_ulong;
+        .wrapping_sub((regX as libc::c_long * 341873128712 as libc::c_long) as libc::c_ulong)
+        .wrapping_sub((regZ as libc::c_long * 132897987541 as libc::c_long) as libc::c_ulong)
+        & 0xffffffffffff as libc::c_long as libc::c_ulong;
 }
 static mut END_GATEWAY_CONFIG: StructureConfig = {
     let mut init = StructureConfig {
@@ -2153,8 +2112,7 @@ pub unsafe extern "C" fn loadSavedSeeds(
     if *scnt == 0 as libc::c_int as libc::c_ulong {
         return 0 as *mut uint64_t;
     }
-    baseSeeds = calloc(*scnt, ::std::mem::size_of::<uint64_t>() as libc::c_ulong)
-        as *mut uint64_t;
+    baseSeeds = calloc(*scnt, ::std::mem::size_of::<uint64_t>() as libc::c_ulong) as *mut uint64_t;
     rewind(fp);
     i = 0 as libc::c_int as uint64_t;
     while i < *scnt && feof(fp) == 0 {
@@ -2178,9 +2136,8 @@ pub unsafe extern "C" fn setAttemptSeed(
     mut cx: libc::c_int,
     mut cz: libc::c_int,
 ) {
-    *s
-        ^= (cx >> 4 as libc::c_int) as uint64_t
-            ^ ((cz >> 4 as libc::c_int) as uint64_t) << 4 as libc::c_int;
+    *s ^= (cx >> 4 as libc::c_int) as uint64_t
+        ^ ((cz >> 4 as libc::c_int) as uint64_t) << 4 as libc::c_int;
     setSeed(s, *s);
     next(s, 31 as libc::c_int);
 }
@@ -2208,16 +2165,15 @@ pub unsafe extern "C" fn getPopulationSeed(
         a |= 1 as libc::c_int as libc::c_ulong;
         b |= 1 as libc::c_int as libc::c_ulong;
     } else {
-        a = (a as int64_t / 2 as libc::c_int as libc::c_long
-            * 2 as libc::c_int as libc::c_long + 1 as libc::c_int as libc::c_long)
-            as uint64_t;
-        b = (b as int64_t / 2 as libc::c_int as libc::c_long
-            * 2 as libc::c_int as libc::c_long + 1 as libc::c_int as libc::c_long)
-            as uint64_t;
+        a = (a as int64_t / 2 as libc::c_int as libc::c_long * 2 as libc::c_int as libc::c_long
+            + 1 as libc::c_int as libc::c_long) as uint64_t;
+        b = (b as int64_t / 2 as libc::c_int as libc::c_long * 2 as libc::c_int as libc::c_long
+            + 1 as libc::c_int as libc::c_long) as uint64_t;
     }
     return (x as libc::c_ulong)
         .wrapping_mul(a)
-        .wrapping_add((z as libc::c_ulong).wrapping_mul(b)) ^ ws;
+        .wrapping_add((z as libc::c_ulong).wrapping_mul(b))
+        ^ ws;
 }
 #[no_mangle]
 pub unsafe extern "C" fn getStructureConfig(
@@ -2368,19 +2324,15 @@ unsafe extern "C" fn getRegPos(
         s,
         (rx as libc::c_ulonglong)
             .wrapping_mul(341873128712 as libc::c_ulonglong)
-            .wrapping_add(
-                (rz as libc::c_ulonglong).wrapping_mul(132897987541 as libc::c_ulonglong),
-            )
+            .wrapping_add((rz as libc::c_ulonglong).wrapping_mul(132897987541 as libc::c_ulonglong))
             .wrapping_add(*s as libc::c_ulonglong)
             .wrapping_add(sc.salt as libc::c_ulonglong) as uint64_t,
     );
-    (*p)
-        .x = ((rx as uint64_t)
+    (*p).x = ((rx as uint64_t)
         .wrapping_mul(sc.regionSize as libc::c_ulong)
         .wrapping_add(nextInt(s, sc.chunkRange as libc::c_int) as libc::c_ulong)
         << 4 as libc::c_int) as libc::c_int;
-    (*p)
-        .z = ((rz as uint64_t)
+    (*p).z = ((rz as uint64_t)
         .wrapping_mul(sc.regionSize as libc::c_ulong)
         .wrapping_add(nextInt(s, sc.chunkRange as libc::c_int) as libc::c_ulong)
         << 4 as libc::c_int) as libc::c_int;
@@ -2416,7 +2368,8 @@ pub unsafe extern "C" fn getStructurePos(
         18 => {
             *pos = getLargeStructurePos(sconf, seed, regX, regZ);
             return (((*pos).x as libc::c_long * (*pos).x as int64_t
-                + (*pos).z as libc::c_long * (*pos).z as int64_t) as libc::c_longlong
+                + (*pos).z as libc::c_long * (*pos).z as int64_t)
+                as libc::c_longlong
                 >= 1008 as libc::c_int as libc::c_longlong * 1008 as libc::c_longlong)
                 as libc::c_int;
         }
@@ -2427,21 +2380,19 @@ pub unsafe extern "C" fn getStructurePos(
                 (*pos).x >> 4 as libc::c_int,
                 (*pos).z >> 4 as libc::c_int,
             );
-            return (nextInt(&mut seed, 5 as libc::c_int) == 0 as libc::c_int)
-                as libc::c_int;
+            return (nextInt(&mut seed, 5 as libc::c_int) == 0 as libc::c_int) as libc::c_int;
         }
         14 => {
-            (*pos)
-                .x = ((regX as uint32_t) << 4 as libc::c_int)
-                .wrapping_add(9 as libc::c_int as libc::c_uint) as libc::c_int;
-            (*pos)
-                .z = ((regZ as uint32_t) << 4 as libc::c_int)
-                .wrapping_add(9 as libc::c_int as libc::c_uint) as libc::c_int;
+            (*pos).x = ((regX as uint32_t) << 4 as libc::c_int)
+                .wrapping_add(9 as libc::c_int as libc::c_uint)
+                as libc::c_int;
+            (*pos).z = ((regZ as uint32_t) << 4 as libc::c_int)
+                .wrapping_add(9 as libc::c_int as libc::c_uint)
+                as libc::c_int;
             seed = (regX as libc::c_ulonglong)
                 .wrapping_mul(341873128712 as libc::c_ulonglong)
                 .wrapping_add(
-                    (regZ as libc::c_ulonglong)
-                        .wrapping_mul(132897987541 as libc::c_ulonglong),
+                    (regZ as libc::c_ulonglong).wrapping_mul(132897987541 as libc::c_ulonglong),
                 )
                 .wrapping_add(seed as libc::c_ulonglong)
                 .wrapping_add(sconf.salt as libc::c_ulonglong) as uint64_t;
@@ -2457,26 +2408,23 @@ pub unsafe extern "C" fn getStructurePos(
                 return 1 as libc::c_int;
             } else if mc >= MC_1_16 as libc::c_int {
                 getRegPos(pos, &mut seed, regX, regZ, sconf);
-                return (nextInt(&mut seed, 5 as libc::c_int) < 2 as libc::c_int)
-                    as libc::c_int;
+                return (nextInt(&mut seed, 5 as libc::c_int) < 2 as libc::c_int) as libc::c_int;
             } else {
                 setAttemptSeed(
                     &mut seed,
                     regX << 4 as libc::c_int,
                     regZ << 4 as libc::c_int,
                 );
-                let mut valid: libc::c_int = (nextInt(&mut seed, 3 as libc::c_int)
-                    == 0 as libc::c_int) as libc::c_int;
-                (*pos)
-                    .x = (((regX as uint64_t) << 4 as libc::c_int)
+                let mut valid: libc::c_int =
+                    (nextInt(&mut seed, 3 as libc::c_int) == 0 as libc::c_int) as libc::c_int;
+                (*pos).x = (((regX as uint64_t) << 4 as libc::c_int)
                     .wrapping_add(nextInt(&mut seed, 8 as libc::c_int) as libc::c_ulong)
-                    .wrapping_add(4 as libc::c_int as libc::c_ulong) << 4 as libc::c_int)
-                    as libc::c_int;
-                (*pos)
-                    .z = (((regZ as uint64_t) << 4 as libc::c_int)
+                    .wrapping_add(4 as libc::c_int as libc::c_ulong)
+                    << 4 as libc::c_int) as libc::c_int;
+                (*pos).z = (((regZ as uint64_t) << 4 as libc::c_int)
                     .wrapping_add(nextInt(&mut seed, 8 as libc::c_int) as libc::c_ulong)
-                    .wrapping_add(4 as libc::c_int as libc::c_ulong) << 4 as libc::c_int)
-                    as libc::c_int;
+                    .wrapping_add(4 as libc::c_int as libc::c_ulong)
+                    << 4 as libc::c_int) as libc::c_int;
                 return valid;
             }
         }
@@ -2488,12 +2436,10 @@ pub unsafe extern "C" fn getStructurePos(
                     (*pos).x >> 4 as libc::c_int,
                     (*pos).z >> 4 as libc::c_int,
                 );
-                return (nextInt(&mut seed, 5 as libc::c_int) >= 2 as libc::c_int)
-                    as libc::c_int;
+                return (nextInt(&mut seed, 5 as libc::c_int) >= 2 as libc::c_int) as libc::c_int;
             } else {
                 getRegPos(pos, &mut seed, regX, regZ, sconf);
-                return (nextInt(&mut seed, 5 as libc::c_int) >= 2 as libc::c_int)
-                    as libc::c_int;
+                return (nextInt(&mut seed, 5 as libc::c_int) >= 2 as libc::c_int) as libc::c_int;
             }
         }
         19 => {
@@ -2503,9 +2449,8 @@ pub unsafe extern "C" fn getStructurePos(
             if mc >= MC_1_18 as libc::c_int {
                 let mut xr: Xoroshiro = Xoroshiro { lo: 0, hi: 0 };
                 seed = (seed as libc::c_ulong)
-                    .wrapping_add(
-                        (10000 as libc::c_int * 4 as libc::c_int) as libc::c_ulong,
-                    ) as uint64_t as uint64_t;
+                    .wrapping_add((10000 as libc::c_int * 4 as libc::c_int) as libc::c_ulong)
+                    as uint64_t as uint64_t;
                 xSetSeed(&mut xr, seed);
                 if xNextFloat(&mut xr) as libc::c_double
                     >= 1.0f64 / 700 as libc::c_int as libc::c_double
@@ -2523,7 +2468,7 @@ pub unsafe extern "C" fn getStructurePos(
                         return 0 as libc::c_int;
                     }
                 } else if nextInt(&mut seed, 700 as libc::c_int) != 0 as libc::c_int {
-                    return 0 as libc::c_int
+                    return 0 as libc::c_int;
                 }
                 (*pos).x += nextInt(&mut seed, 16 as libc::c_int);
                 (*pos).z += nextInt(&mut seed, 16 as libc::c_int);
@@ -2568,10 +2513,10 @@ pub unsafe extern "C" fn getMineshafts(
             if mc >= MC_1_13 as libc::c_int {
                 if (nextDouble(&mut s) < 0.004f64) as libc::c_int as libc::c_long != 0 {
                     if !out.is_null() && n < nout {
-                        (*out.offset(n as isize))
-                            .x = ((i as uint32_t) << 4 as libc::c_int) as libc::c_int;
-                        (*out.offset(n as isize))
-                            .z = ((j as uint32_t) << 4 as libc::c_int) as libc::c_int;
+                        (*out.offset(n as isize)).x =
+                            ((i as uint32_t) << 4 as libc::c_int) as libc::c_int;
+                        (*out.offset(n as isize)).z =
+                            ((j as uint32_t) << 4 as libc::c_int) as libc::c_int;
                     }
                     n += 1;
                 }
@@ -2590,10 +2535,10 @@ pub unsafe extern "C" fn getMineshafts(
                     }
                     if d >= 80 as libc::c_int || nextInt(&mut s, 80 as libc::c_int) < d {
                         if !out.is_null() && n < nout {
-                            (*out.offset(n as isize))
-                                .x = ((i as uint32_t) << 4 as libc::c_int) as libc::c_int;
-                            (*out.offset(n as isize))
-                                .z = ((j as uint32_t) << 4 as libc::c_int) as libc::c_int;
+                            (*out.offset(n as isize)).x =
+                                ((i as uint32_t) << 4 as libc::c_int) as libc::c_int;
+                            (*out.offset(n as isize)).z =
+                                ((j as uint32_t) << 4 as libc::c_int) as libc::c_int;
                         }
                         n += 1;
                     }
@@ -2638,11 +2583,7 @@ unsafe extern "C" fn blocksInRange(
     }
     return cnt;
 }
-unsafe extern "C" fn checkAfkDist(
-    mut d: *mut afk_meta_t,
-    mut x: libc::c_int,
-    mut z: libc::c_int,
-) {
+unsafe extern "C" fn checkAfkDist(mut d: *mut afk_meta_t, mut x: libc::c_int, mut z: libc::c_int) {
     if x < 0 as libc::c_int || z < 0 as libc::c_int || x >= (*d).w || z >= (*d).h {
         return;
     }
@@ -2717,8 +2658,7 @@ pub unsafe extern "C" fn getOptimalAfk(
     minZ += (az / 2 as libc::c_int) as libc::c_long;
     maxX += (ax / 2 as libc::c_int) as libc::c_long;
     maxZ += (az / 2 as libc::c_int) as libc::c_long;
-    let mut rsq: libc::c_double = 128.0f64 * 128.0f64
-        - (ay * ay) as libc::c_double / 4.0f64;
+    let mut rsq: libc::c_double = 128.0f64 * 128.0f64 - (ay * ay) as libc::c_double / 4.0f64;
     w = maxX - minX;
     h = maxZ - minZ;
     let mut afk: Pos = {
@@ -2747,8 +2687,7 @@ pub unsafe extern "C" fn getOptimalAfk(
     };
     d.p = p;
     d.n = 4 as libc::c_int;
-    d
-        .buf = calloc(
+    d.buf = calloc(
         (w * h) as libc::c_ulong,
         ::std::mem::size_of::<libc::c_int>() as libc::c_ulong,
     ) as *mut libc::c_int;
@@ -2764,62 +2703,73 @@ pub unsafe extern "C" fn getOptimalAfk(
         {
             let mut init = Pos {
                 x: ((*p.offset(0 as libc::c_int as isize)).x
-                    + (*p.offset(2 as libc::c_int as isize)).x) / 2 as libc::c_int,
+                    + (*p.offset(2 as libc::c_int as isize)).x)
+                    / 2 as libc::c_int,
                 z: ((*p.offset(0 as libc::c_int as isize)).z
-                    + (*p.offset(2 as libc::c_int as isize)).z) / 2 as libc::c_int,
+                    + (*p.offset(2 as libc::c_int as isize)).z)
+                    / 2 as libc::c_int,
             };
             init
         },
         {
             let mut init = Pos {
                 x: ((*p.offset(1 as libc::c_int as isize)).x
-                    + (*p.offset(3 as libc::c_int as isize)).x) / 2 as libc::c_int,
+                    + (*p.offset(3 as libc::c_int as isize)).x)
+                    / 2 as libc::c_int,
                 z: ((*p.offset(1 as libc::c_int as isize)).z
-                    + (*p.offset(3 as libc::c_int as isize)).z) / 2 as libc::c_int,
+                    + (*p.offset(3 as libc::c_int as isize)).z)
+                    / 2 as libc::c_int,
             };
             init
         },
         {
             let mut init = Pos {
                 x: ((*p.offset(0 as libc::c_int as isize)).x
-                    + (*p.offset(1 as libc::c_int as isize)).x) / 2 as libc::c_int,
+                    + (*p.offset(1 as libc::c_int as isize)).x)
+                    / 2 as libc::c_int,
                 z: ((*p.offset(0 as libc::c_int as isize)).z
-                    + (*p.offset(1 as libc::c_int as isize)).z) / 2 as libc::c_int,
+                    + (*p.offset(1 as libc::c_int as isize)).z)
+                    / 2 as libc::c_int,
             };
             init
         },
         {
             let mut init = Pos {
                 x: ((*p.offset(2 as libc::c_int as isize)).x
-                    + (*p.offset(3 as libc::c_int as isize)).x) / 2 as libc::c_int,
+                    + (*p.offset(3 as libc::c_int as isize)).x)
+                    / 2 as libc::c_int,
                 z: ((*p.offset(2 as libc::c_int as isize)).z
-                    + (*p.offset(3 as libc::c_int as isize)).z) / 2 as libc::c_int,
+                    + (*p.offset(3 as libc::c_int as isize)).z)
+                    / 2 as libc::c_int,
             };
             init
         },
         {
             let mut init = Pos {
                 x: ((*p.offset(0 as libc::c_int as isize)).x
-                    + (*p.offset(3 as libc::c_int as isize)).x) / 2 as libc::c_int,
+                    + (*p.offset(3 as libc::c_int as isize)).x)
+                    / 2 as libc::c_int,
                 z: ((*p.offset(0 as libc::c_int as isize)).z
-                    + (*p.offset(3 as libc::c_int as isize)).z) / 2 as libc::c_int,
+                    + (*p.offset(3 as libc::c_int as isize)).z)
+                    / 2 as libc::c_int,
             };
             init
         },
         {
             let mut init = Pos {
                 x: ((*p.offset(1 as libc::c_int as isize)).x
-                    + (*p.offset(2 as libc::c_int as isize)).x) / 2 as libc::c_int,
+                    + (*p.offset(2 as libc::c_int as isize)).x)
+                    / 2 as libc::c_int,
                 z: ((*p.offset(1 as libc::c_int as isize)).z
-                    + (*p.offset(2 as libc::c_int as isize)).z) / 2 as libc::c_int,
+                    + (*p.offset(2 as libc::c_int as isize)).z)
+                    / 2 as libc::c_int,
             };
             init
         },
     ];
     i = 0 as libc::c_int as int64_t;
     while i < 6 as libc::c_int as libc::c_long {
-        v[i
-            as usize] = blocksInRange(
+        v[i as usize] = blocksInRange(
             p,
             4 as libc::c_int,
             dsp[i as usize].x,
@@ -2850,15 +2800,15 @@ pub unsafe extern "C" fn getOptimalAfk(
         d.sumn = 0 as libc::c_int;
         d.sumx = 0 as libc::c_int as int64_t;
         d.sumz = 0 as libc::c_int as int64_t;
-        checkAfkDist(&mut d, dsp[jmax as usize].x - d.x0, dsp[jmax as usize].z - d.z0);
+        checkAfkDist(
+            &mut d,
+            dsp[jmax as usize].x - d.x0,
+            dsp[jmax as usize].z - d.z0,
+        );
         if d.best > cnt {
             cnt = d.best;
-            afk
-                .x = round(d.sumx as libc::c_double / d.sumn as libc::c_double)
-                as libc::c_int;
-            afk
-                .z = round(d.sumz as libc::c_double / d.sumn as libc::c_double)
-                as libc::c_int;
+            afk.x = round(d.sumx as libc::c_double / d.sumn as libc::c_double) as libc::c_int;
+            afk.z = round(d.sumz as libc::c_double / d.sumn as libc::c_double) as libc::c_int;
             if cnt >= 3 as libc::c_int * ax * az {
                 break;
             }
@@ -2900,25 +2850,32 @@ unsafe extern "C" fn mkdirp(mut path: *mut libc::c_char) -> libc::c_int {
             st_size: 0,
             st_blksize: 0,
             st_blocks: 0,
-            st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_atim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_mtim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_ctim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
             __glibc_reserved: [0; 3],
         };
         if stat(path, &mut st) == -(1 as libc::c_int) {
             err = mkdir(path, 0o773 as libc::c_int as __mode_t);
         } else if !(st.st_mode & 0o170000 as libc::c_int as libc::c_uint
-                == 0o40000 as libc::c_int as libc::c_uint)
-            {
+            == 0o40000 as libc::c_int as libc::c_uint)
+        {
             err = 1 as libc::c_int;
         }
         p = q.offset(1 as libc::c_int as isize);
     }
     return err;
 }
-unsafe extern "C" fn searchAll48Thread(
-    mut data: *mut libc::c_void,
-) -> *mut libc::c_void {
+unsafe extern "C" fn searchAll48Thread(mut data: *mut libc::c_void) -> *mut libc::c_void {
     let mut info: *mut threadinfo_t = data as *mut threadinfo_t;
     let mut seed: uint64_t = (*info).start;
     let mut end: uint64_t = (*info).end;
@@ -2927,8 +2884,7 @@ unsafe extern "C" fn searchAll48Thread(
     let ref mut fresh2 = (*lp).next;
     *fresh2 = 0 as *mut linked_seeds_t;
     if !((*info).lowBits).is_null() {
-        let mut hstep: uint64_t = ((1 as libc::c_ulonglong) << (*info).lowBitN)
-            as uint64_t;
+        let mut hstep: uint64_t = ((1 as libc::c_ulonglong) << (*info).lowBitN) as uint64_t;
         let mut hmask: uint64_t = !hstep.wrapping_sub(1 as libc::c_int as libc::c_ulong);
         let mut mid: uint64_t = 0;
         let mut idx: libc::c_int = 0;
@@ -2943,7 +2899,8 @@ unsafe extern "C" fn searchAll48Thread(
         }
         while seed <= end {
             if ((*info).check).expect("non-null function pointer")(seed, (*info).data)
-                as libc::c_long != 0
+                as libc::c_long
+                != 0
             {
                 if !((*info).fp).is_null() {
                     fprintf(
@@ -2958,13 +2915,11 @@ unsafe extern "C" fn searchAll48Thread(
                     *fresh3 = (*fresh3).wrapping_add(1);
                     if (*lp).len
                         >= (::std::mem::size_of::<[uint64_t; 100]>() as libc::c_ulong)
-                            .wrapping_div(
-                                ::std::mem::size_of::<uint64_t>() as libc::c_ulong,
-                            )
+                            .wrapping_div(::std::mem::size_of::<uint64_t>() as libc::c_ulong)
                     {
-                        let mut n: *mut linked_seeds_t = malloc(
-                            ::std::mem::size_of::<linked_seeds_t>() as libc::c_ulong,
-                        ) as *mut linked_seeds_t;
+                        let mut n: *mut linked_seeds_t =
+                            malloc(::std::mem::size_of::<linked_seeds_t>() as libc::c_ulong)
+                                as *mut linked_seeds_t;
                         if n.is_null() {
                             exit(1 as libc::c_int);
                         }
@@ -2987,7 +2942,8 @@ unsafe extern "C" fn searchAll48Thread(
     } else {
         while seed <= end {
             if ((*info).check).expect("non-null function pointer")(seed, (*info).data)
-                as libc::c_long != 0
+                as libc::c_long
+                != 0
             {
                 if !((*info).fp).is_null() {
                     fprintf(
@@ -3002,13 +2958,11 @@ unsafe extern "C" fn searchAll48Thread(
                     *fresh6 = (*fresh6).wrapping_add(1);
                     if (*lp).len
                         >= (::std::mem::size_of::<[uint64_t; 100]>() as libc::c_ulong)
-                            .wrapping_div(
-                                ::std::mem::size_of::<uint64_t>() as libc::c_ulong,
-                            )
+                            .wrapping_div(::std::mem::size_of::<uint64_t>() as libc::c_ulong)
                     {
-                        let mut n_0: *mut linked_seeds_t = malloc(
-                            ::std::mem::size_of::<linked_seeds_t>() as libc::c_ulong,
-                        ) as *mut linked_seeds_t;
+                        let mut n_0: *mut linked_seeds_t =
+                            malloc(::std::mem::size_of::<linked_seeds_t>() as libc::c_ulong)
+                                as *mut linked_seeds_t;
                         if n_0.is_null() {
                             exit(1 as libc::c_int);
                         }
@@ -3035,9 +2989,7 @@ pub unsafe extern "C" fn searchAll48(
     mut lowBits: *const uint64_t,
     mut lowBitCnt: libc::c_int,
     mut lowBitN: libc::c_int,
-    mut check: Option::<
-        unsafe extern "C" fn(uint64_t, *mut libc::c_void) -> libc::c_int,
-    >,
+    mut check: Option<unsafe extern "C" fn(uint64_t, *mut libc::c_void) -> libc::c_int>,
     mut data: *mut libc::c_void,
 ) -> libc::c_int {
     let mut current_block: u64;
@@ -3094,18 +3046,19 @@ pub unsafe extern "C" fn searchAll48(
                     current_block = 1345366029464561491;
                     break;
                 }
-                (*info.offset(t as isize))
-                    .start = (t as libc::c_long
+                (*info.offset(t as isize)).start = (t as libc::c_long
                     * (((1 as libc::c_int as int64_t) << 48 as libc::c_int)
                         - 1 as libc::c_int as libc::c_long
-                        + 1 as libc::c_int as libc::c_long) / threads as libc::c_long)
+                        + 1 as libc::c_int as libc::c_long)
+                    / threads as libc::c_long)
                     as uint64_t;
-                (*info.offset(t as isize))
-                    .end = ((t + 1 as libc::c_int) as libc::c_long
+                (*info.offset(t as isize)).end = ((t + 1 as libc::c_int) as libc::c_long
                     * (((1 as libc::c_int as int64_t) << 48 as libc::c_int)
                         - 1 as libc::c_int as libc::c_long
-                        + 1 as libc::c_int as libc::c_long) / threads as libc::c_long
-                    - 1 as libc::c_int as libc::c_long) as uint64_t;
+                        + 1 as libc::c_int as libc::c_long)
+                    / threads as libc::c_long
+                    - 1 as libc::c_int as libc::c_long)
+                    as uint64_t;
                 let ref mut fresh9 = (*info.offset(t as isize)).lowBits;
                 *fresh9 = lowBits;
                 (*info.offset(t as isize)).lowBitCnt = lowBitCnt;
@@ -3146,11 +3099,7 @@ pub unsafe extern "C" fn searchAll48(
                         i += 1;
                     }
                     if i < 32 as libc::c_int
-                        && fseek(
-                            fp,
-                            (1 as libc::c_int - i) as libc::c_long,
-                            2 as libc::c_int,
-                        ) == 0
+                        && fseek(fp, (1 as libc::c_int - i) as libc::c_long, 2 as libc::c_int) == 0
                         && fread(
                             buf.as_mut_ptr() as *mut libc::c_void,
                             (i - 1 as libc::c_int) as libc::c_ulong,
@@ -3178,9 +3127,8 @@ pub unsafe extern "C" fn searchAll48(
                     let ref mut fresh12 = (*info.offset(t as isize)).fp;
                     *fresh12 = fp;
                 } else {
-                    (*info.offset(t as isize))
-                        .path[0 as libc::c_int
-                        as usize] = 0 as libc::c_int as libc::c_char;
+                    (*info.offset(t as isize)).path[0 as libc::c_int as usize] =
+                        0 as libc::c_int as libc::c_char;
                     let ref mut fresh13 = (*info.offset(t as isize)).fp;
                     *fresh13 = 0 as *mut FILE;
                 }
@@ -3196,28 +3144,20 @@ pub unsafe extern "C" fn searchAll48(
                             0 as *const pthread_attr_t,
                             Some(
                                 searchAll48Thread
-                                    as unsafe extern "C" fn(
-                                        *mut libc::c_void,
-                                    ) -> *mut libc::c_void,
+                                    as unsafe extern "C" fn(*mut libc::c_void) -> *mut libc::c_void,
                             ),
-                            &mut *info.offset(t as isize) as *mut threadinfo_t
-                                as *mut libc::c_void,
+                            &mut *info.offset(t as isize) as *mut threadinfo_t as *mut libc::c_void,
                         );
                         t += 1;
                     }
                     t = 0 as libc::c_int;
                     while t < threads {
-                        pthread_join(
-                            *tids.offset(t as isize),
-                            0 as *mut *mut libc::c_void,
-                        );
+                        pthread_join(*tids.offset(t as isize), 0 as *mut *mut libc::c_void);
                         t += 1;
                     }
                     if !path.is_null() {
-                        let mut fp_0: *mut FILE = fopen(
-                            path,
-                            b"w\0" as *const u8 as *const libc::c_char,
-                        );
+                        let mut fp_0: *mut FILE =
+                            fopen(path, b"w\0" as *const u8 as *const libc::c_char);
                         if fp_0.is_null() {
                             current_block = 18318163450978097180;
                         } else {
@@ -3272,12 +3212,11 @@ pub unsafe extern "C" fn searchAll48(
                         *buflen = 0 as libc::c_int as uint64_t;
                         t = 0 as libc::c_int;
                         while t < threads {
-                            let mut lp: *mut linked_seeds_t = &mut (*info
-                                .offset(t as isize))
-                                .ls;
+                            let mut lp: *mut linked_seeds_t = &mut (*info.offset(t as isize)).ls;
                             loop {
                                 *buflen = (*buflen as libc::c_ulong).wrapping_add((*lp).len)
-                                    as uint64_t as uint64_t;
+                                    as uint64_t
+                                    as uint64_t;
                                 lp = (*lp).next;
                                 if lp.is_null() {
                                     break;
@@ -3287,9 +3226,7 @@ pub unsafe extern "C" fn searchAll48(
                         }
                         *seedbuf = malloc(
                             (*buflen)
-                                .wrapping_mul(
-                                    ::std::mem::size_of::<uint64_t>() as libc::c_ulong,
-                                ),
+                                .wrapping_mul(::std::mem::size_of::<uint64_t>() as libc::c_ulong),
                         ) as *mut uint64_t;
                         if (*seedbuf).is_null() {
                             exit(1 as libc::c_int);
@@ -3297,24 +3234,20 @@ pub unsafe extern "C" fn searchAll48(
                         i = 0 as libc::c_int;
                         t = 0 as libc::c_int;
                         while t < threads {
-                            let mut lp_0: *mut linked_seeds_t = &mut (*info
-                                .offset(t as isize))
-                                .ls;
+                            let mut lp_0: *mut linked_seeds_t = &mut (*info.offset(t as isize)).ls;
                             loop {
                                 memcpy(
                                     (*seedbuf).offset(i as isize) as *mut libc::c_void,
                                     ((*lp_0).seeds).as_mut_ptr() as *const libc::c_void,
-                                    ((*lp_0).len)
-                                        .wrapping_mul(
-                                            ::std::mem::size_of::<uint64_t>() as libc::c_ulong,
-                                        ),
+                                    ((*lp_0).len).wrapping_mul(
+                                        ::std::mem::size_of::<uint64_t>() as libc::c_ulong
+                                    ),
                                 );
-                                i = (i as libc::c_ulong).wrapping_add((*lp_0).len)
-                                    as libc::c_int as libc::c_int;
+                                i = (i as libc::c_ulong).wrapping_add((*lp_0).len) as libc::c_int
+                                    as libc::c_int;
                                 let mut tmp: *mut linked_seeds_t = lp_0;
                                 lp_0 = (*lp_0).next;
-                                if tmp
-                                    != &mut (*info.offset(t as isize)).ls as *mut linked_seeds_t
+                                if tmp != &mut (*info.offset(t as isize)).ls as *mut linked_seeds_t
                                 {
                                     free(tmp as *mut libc::c_void);
                                 }
@@ -3375,11 +3308,7 @@ unsafe extern "C" fn scanForQuadBits(
             j = (j as libc::c_ulong).wrapping_add(m) as int64_t as int64_t;
         }
         while j <= z + h {
-            let mut sp: uint64_t = moveStructure(
-                s48,
-                -i as libc::c_int,
-                -j as libc::c_int,
-            );
+            let mut sp: uint64_t = moveStructure(s48, -i as libc::c_int, -j as libc::c_int);
             if !(sp & m.wrapping_sub(1 as libc::c_int as libc::c_ulong) != lbit) {
                 if isQuadBase(sconf, sp, radius) != 0. {
                     (*qplist.offset(cnt as isize)).x = i as libc::c_int;
@@ -3427,21 +3356,20 @@ pub unsafe extern "C" fn scanForQuads(
     }
     i = 0 as libc::c_int;
     while i < lowBitCnt {
-        cnt
-            += scanForQuadBits(
-                sconf,
-                radius,
-                s48,
-                (*lowBits.offset(i as isize)).wrapping_sub(salt),
-                lowBitN,
-                invB,
-                x as int64_t,
-                z as int64_t,
-                w as int64_t,
-                h as int64_t,
-                qplist.offset(cnt as isize),
-                n - cnt,
-            );
+        cnt += scanForQuadBits(
+            sconf,
+            radius,
+            s48,
+            (*lowBits.offset(i as isize)).wrapping_sub(salt),
+            lowBitN,
+            invB,
+            x as int64_t,
+            z as int64_t,
+            w as int64_t,
+            h as int64_t,
+            qplist.offset(cnt as isize),
+            n - cnt,
+        );
         if cnt >= n {
             break;
         }
@@ -3528,13 +3456,11 @@ pub unsafe extern "C" fn locateBiome(
             j = 2 as libc::c_int;
             while i < width * height {
                 if !(*validBiomes.offset(*ids.offset(i as isize) as isize) == 0) {
-                    if found == 0 as libc::c_int
-                        || {
-                            let fresh14 = j;
-                            j = j + 1;
-                            nextInt(rng, fresh14) == 0 as libc::c_int
-                        }
-                    {
+                    if found == 0 as libc::c_int || {
+                        let fresh14 = j;
+                        j = j + 1;
+                        nextInt(rng, fresh14) == 0 as libc::c_int
+                    } {
                         out.x = x1 + i % width << 2 as libc::c_int;
                         out.z = z1 + i / width << 2 as libc::c_int;
                         found = 1 as libc::c_int;
@@ -3716,9 +3642,7 @@ pub unsafe extern "C" fn areBiomesViable(
     return viable;
 }
 #[no_mangle]
-pub unsafe extern "C" fn getValidStrongholdBiomes(
-    mut mc: libc::c_int,
-) -> *const libc::c_char {
+pub unsafe extern "C" fn getValidStrongholdBiomes(mut mc: libc::c_int) -> *const libc::c_char {
     static mut strongholdBiomes: [libc::c_int; 60] = [
         plains as libc::c_int,
         desert as libc::c_int,
@@ -3798,26 +3722,15 @@ pub unsafe extern "C" fn getValidStrongholdBiomes(
             < (::std::mem::size_of::<[libc::c_int; 60]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
         {
-            *valid
-                .offset(
-                    strongholdBiomes[i as usize] as isize,
-                ) = 1 as libc::c_int as libc::c_char;
+            *valid.offset(strongholdBiomes[i as usize] as isize) = 1 as libc::c_int as libc::c_char;
             i = i.wrapping_add(1);
         }
         if mc >= MC_1_18 as libc::c_int {
-            *valid
-                .offset(
-                    stone_shore as libc::c_int as isize,
-                ) = 0 as libc::c_int as libc::c_char;
+            *valid.offset(stone_shore as libc::c_int as isize) = 0 as libc::c_int as libc::c_char;
         } else if mc >= MC_1_16 as libc::c_int {
-            *valid
-                .offset(
-                    bamboo_jungle as libc::c_int as isize,
-                ) = 0 as libc::c_int as libc::c_char;
-            *valid
-                .offset(
-                    bamboo_jungle_hills as libc::c_int as isize,
-                ) = 0 as libc::c_int as libc::c_char;
+            *valid.offset(bamboo_jungle as libc::c_int as isize) = 0 as libc::c_int as libc::c_char;
+            *valid.offset(bamboo_jungle_hills as libc::c_int as isize) =
+                0 as libc::c_int as libc::c_char;
         }
     }
     return valid;
@@ -3836,17 +3749,12 @@ pub unsafe extern "C" fn initFirstStronghold(
     angle = 2.0f64 * 3.141592653589793f64 * nextDouble(&mut rnds);
     if mc >= MC_1_9 as libc::c_int {
         dist = 4.0f64 * 32.0f64
-            + (nextDouble(&mut rnds) - 0.5f64) * 32 as libc::c_int as libc::c_double
-                * 2.5f64;
+            + (nextDouble(&mut rnds) - 0.5f64) * 32 as libc::c_int as libc::c_double * 2.5f64;
     } else {
         dist = (1.25f64 + nextDouble(&mut rnds)) * 32.0f64;
     }
-    p
-        .x = ((round(cos(angle) * dist) as libc::c_int) << 4 as libc::c_int)
-        + 8 as libc::c_int;
-    p
-        .z = ((round(sin(angle) * dist) as libc::c_int) << 4 as libc::c_int)
-        + 8 as libc::c_int;
+    p.x = ((round(cos(angle) * dist) as libc::c_int) << 4 as libc::c_int) + 8 as libc::c_int;
+    p.z = ((round(sin(angle) * dist) as libc::c_int) << 4 as libc::c_int) + 8 as libc::c_int;
     if !sh.is_null() {
         let ref mut fresh15 = (*sh).pos.z;
         *fresh15 = 0 as libc::c_int;
@@ -3868,8 +3776,7 @@ pub unsafe extern "C" fn nextStronghold(
     mut sh: *mut StrongholdIter,
     mut g: *const Generator,
 ) -> libc::c_int {
-    (*sh)
-        .pos = locateBiome(
+    (*sh).pos = locateBiome(
         g,
         (*sh).nextapprox.x,
         0 as libc::c_int,
@@ -3881,36 +3788,31 @@ pub unsafe extern "C" fn nextStronghold(
     );
     let ref mut fresh16 = (*sh).ringidx;
     *fresh16 += 1;
-    (*sh).angle
-        += 2 as libc::c_int as libc::c_double * 3.141592653589793f64
-            / (*sh).ringmax as libc::c_double;
+    (*sh).angle +=
+        2 as libc::c_int as libc::c_double * 3.141592653589793f64 / (*sh).ringmax as libc::c_double;
     if (*sh).ringidx == (*sh).ringmax {
         let ref mut fresh17 = (*sh).ringnum;
         *fresh17 += 1;
         (*sh).ringidx = 0 as libc::c_int;
-        (*sh)
-            .ringmax = (*sh).ringmax
-            + 2 as libc::c_int * (*sh).ringmax / ((*sh).ringnum + 1 as libc::c_int);
+        (*sh).ringmax =
+            (*sh).ringmax + 2 as libc::c_int * (*sh).ringmax / ((*sh).ringnum + 1 as libc::c_int);
         if (*sh).ringmax > 128 as libc::c_int - (*sh).index {
             (*sh).ringmax = 128 as libc::c_int - (*sh).index;
         }
         (*sh).angle += nextDouble(&mut (*sh).rnds) * 3.141592653589793f64 * 2.0f64;
     }
     if (*sh).mc >= MC_1_9 as libc::c_int {
-        (*sh)
-            .dist = 4.0f64 * 32.0f64 + 6.0f64 * (*sh).ringnum as libc::c_double * 32.0f64
-            + (nextDouble(&mut (*sh).rnds) - 0.5f64)
-                * 32 as libc::c_int as libc::c_double * 2.5f64;
+        (*sh).dist = 4.0f64 * 32.0f64
+            + 6.0f64 * (*sh).ringnum as libc::c_double * 32.0f64
+            + (nextDouble(&mut (*sh).rnds) - 0.5f64) * 32 as libc::c_int as libc::c_double * 2.5f64;
     } else {
         (*sh).dist = (1.25f64 + nextDouble(&mut (*sh).rnds)) * 32.0f64;
     }
-    (*sh)
-        .nextapprox
-        .x = ((round(cos((*sh).angle) * (*sh).dist) as libc::c_int) << 4 as libc::c_int)
+    (*sh).nextapprox.x = ((round(cos((*sh).angle) * (*sh).dist) as libc::c_int)
+        << 4 as libc::c_int)
         + 8 as libc::c_int;
-    (*sh)
-        .nextapprox
-        .z = ((round(sin((*sh).angle) * (*sh).dist) as libc::c_int) << 4 as libc::c_int)
+    (*sh).nextapprox.z = ((round(sin((*sh).angle) * (*sh).dist) as libc::c_int)
+        << 4 as libc::c_int)
         + 8 as libc::c_int;
     let ref mut fresh18 = (*sh).index;
     *fresh18 += 1;
@@ -3993,8 +3895,7 @@ unsafe extern "C" fn getValidSpawnBiomes() -> *const libc::c_char {
             < (::std::mem::size_of::<[libc::c_int; 7]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
         {
-            isValid[biomesToSpawnIn[i as usize]
-                as usize] = 1 as libc::c_int as libc::c_char;
+            isValid[biomesToSpawnIn[i as usize] as usize] = 1 as libc::c_int as libc::c_char;
             i = i.wrapping_add(1);
         }
     }
@@ -4018,13 +3919,8 @@ unsafe extern "C" fn findServerSpawn(
             while z < 4 as libc::c_int {
                 let mut x4: libc::c_int = (chunkX << 2 as libc::c_int) + x;
                 let mut z4: libc::c_int = (chunkZ << 2 as libc::c_int) + z;
-                let mut id: libc::c_int = getBiomeAt(
-                    g,
-                    4 as libc::c_int,
-                    x4,
-                    16 as libc::c_int,
-                    z4,
-                );
+                let mut id: libc::c_int =
+                    getBiomeAt(g, 4 as libc::c_int, x4, 16 as libc::c_int, z4);
                 if isOceanic(id) != 0 || id == river as libc::c_int {
                     z += 1;
                 } else {
@@ -4057,17 +3953,15 @@ unsafe extern "C" fn findServerSpawn(
             z = 0 as libc::c_int;
             while z < 16 as libc::c_int {
                 let mut pos: Pos = {
-                    let mut init = Pos { x: r.x + x, z: r.z + z };
+                    let mut init = Pos {
+                        x: r.x + x,
+                        z: r.z + z,
+                    };
                     init
                 };
-                let mut id_0: libc::c_int = *area
-                    .offset((z * 16 as libc::c_int + x) as isize);
-                let mut gp: libc::c_double = getGrassProbability(
-                    (*g).mc as uint64_t,
-                    id_0,
-                    pos.x,
-                    pos.z,
-                );
+                let mut id_0: libc::c_int = *area.offset((z * 16 as libc::c_int + x) as isize);
+                let mut gp: libc::c_double =
+                    getGrassProbability((*g).mc as uint64_t, id_0, pos.x, pos.z);
                 if !(gp == 0 as libc::c_int as libc::c_double) {
                     *bx += *accum * gp * pos.x as libc::c_double;
                     *bz += *accum * gp * pos.z as libc::c_double;
@@ -4092,8 +3986,8 @@ unsafe extern "C" fn getSpawnDist(
     mut z: libc::c_int,
 ) -> uint64_t {
     let mut np: [int64_t; 6] = [0; 6];
-    let mut flags: uint32_t = (SAMPLE_NO_DEPTH as libc::c_int
-        | SAMPLE_NO_BIOME as libc::c_int) as uint32_t;
+    let mut flags: uint32_t =
+        (SAMPLE_NO_DEPTH as libc::c_int | SAMPLE_NO_BIOME as libc::c_int) as uint32_t;
     sampleBiomeNoise(
         &(*g).c2rust_unnamed.c2rust_unnamed_0.bn,
         np.as_mut_ptr(),
@@ -4104,13 +3998,31 @@ unsafe extern "C" fn getSpawnDist(
         flags,
     );
     let spawn_np: [[int64_t; 2]; 7] = [
-        [-(10000 as libc::c_int) as int64_t, 10000 as libc::c_int as int64_t],
-        [-(10000 as libc::c_int) as int64_t, 10000 as libc::c_int as int64_t],
-        [-(1100 as libc::c_int) as int64_t, 10000 as libc::c_int as int64_t],
-        [-(10000 as libc::c_int) as int64_t, 10000 as libc::c_int as int64_t],
+        [
+            -(10000 as libc::c_int) as int64_t,
+            10000 as libc::c_int as int64_t,
+        ],
+        [
+            -(10000 as libc::c_int) as int64_t,
+            10000 as libc::c_int as int64_t,
+        ],
+        [
+            -(1100 as libc::c_int) as int64_t,
+            10000 as libc::c_int as int64_t,
+        ],
+        [
+            -(10000 as libc::c_int) as int64_t,
+            10000 as libc::c_int as int64_t,
+        ],
         [0 as libc::c_int as int64_t, 0 as libc::c_int as int64_t],
-        [-(10000 as libc::c_int) as int64_t, -(1600 as libc::c_int) as int64_t],
-        [1600 as libc::c_int as int64_t, 10000 as libc::c_int as int64_t],
+        [
+            -(10000 as libc::c_int) as int64_t,
+            -(1600 as libc::c_int) as int64_t,
+        ],
+        [
+            1600 as libc::c_int as int64_t,
+            10000 as libc::c_int as int64_t,
+        ],
     ];
     let mut ds: uint64_t = 0 as libc::c_int as uint64_t;
     let mut ds1: uint64_t = 0 as libc::c_int as uint64_t;
@@ -4132,18 +4044,13 @@ unsafe extern "C" fn getSpawnDist(
         } else {
             0 as libc::c_int as libc::c_ulong
         };
-        ds = (ds as libc::c_ulong).wrapping_add(q.wrapping_mul(q)) as uint64_t
-            as uint64_t;
+        ds = (ds as libc::c_ulong).wrapping_add(q.wrapping_mul(q)) as uint64_t as uint64_t;
         i = i.wrapping_add(1);
     }
     a = (np[5 as libc::c_int as usize] as libc::c_ulong)
-        .wrapping_sub(
-            spawn_np[5 as libc::c_int as usize][1 as libc::c_int as usize] as uint64_t,
-        );
+        .wrapping_sub(spawn_np[5 as libc::c_int as usize][1 as libc::c_int as usize] as uint64_t);
     b = (-np[5 as libc::c_int as usize] as libc::c_ulong)
-        .wrapping_add(
-            spawn_np[5 as libc::c_int as usize][0 as libc::c_int as usize] as uint64_t,
-        );
+        .wrapping_add(spawn_np[5 as libc::c_int as usize][0 as libc::c_int as usize] as uint64_t);
     q = if a as int64_t > 0 as libc::c_int as libc::c_long {
         a
     } else if b as int64_t > 0 as libc::c_int as libc::c_long {
@@ -4153,13 +4060,9 @@ unsafe extern "C" fn getSpawnDist(
     };
     ds1 = ds.wrapping_add(q.wrapping_mul(q));
     a = (np[5 as libc::c_int as usize] as libc::c_ulong)
-        .wrapping_sub(
-            spawn_np[6 as libc::c_int as usize][1 as libc::c_int as usize] as uint64_t,
-        );
+        .wrapping_sub(spawn_np[6 as libc::c_int as usize][1 as libc::c_int as usize] as uint64_t);
     b = (-np[5 as libc::c_int as usize] as libc::c_ulong)
-        .wrapping_add(
-            spawn_np[6 as libc::c_int as usize][0 as libc::c_int as usize] as uint64_t,
-        );
+        .wrapping_add(spawn_np[6 as libc::c_int as usize][0 as libc::c_int as usize] as uint64_t);
     q = if a as int64_t > 0 as libc::c_int as libc::c_long {
         a
     } else if b as int64_t > 0 as libc::c_int as libc::c_long {
@@ -4187,8 +4090,7 @@ unsafe extern "C" fn findFittest(
             + z as libc::c_double * z as libc::c_double)
             / (2500 as libc::c_int * 2500 as libc::c_int) as libc::c_double;
         let mut fit: uint64_t = (d * d * 1e8f64) as uint64_t;
-        fit = (fit as libc::c_ulong).wrapping_add(getSpawnDist(g, x, z)) as uint64_t
-            as uint64_t;
+        fit = (fit as libc::c_ulong).wrapping_add(getSpawnDist(g, x, z)) as uint64_t as uint64_t;
         if fit < *fitness {
             (*pos).x = x;
             (*pos).z = z;
@@ -4259,8 +4161,10 @@ pub unsafe extern "C" fn getSpawn(mut g: *const Generator) -> Pos {
         j = k;
         i = 0 as libc::c_int;
         while i < 1024 as libc::c_int {
-            if j > -(16 as libc::c_int) && j <= 16 as libc::c_int
-                && k > -(16 as libc::c_int) && k <= 16 as libc::c_int
+            if j > -(16 as libc::c_int)
+                && j <= 16 as libc::c_int
+                && k > -(16 as libc::c_int)
+                && k <= 16 as libc::c_int
             {
                 if findServerSpawn(
                     g,
@@ -4277,7 +4181,8 @@ pub unsafe extern "C" fn getSpawn(mut g: *const Generator) -> Pos {
                     return spawn;
                 }
             }
-            if j == k || j < 0 as libc::c_int && j == -k
+            if j == k
+                || j < 0 as libc::c_int && j == -k
                 || j > 0 as libc::c_int && j == 1 as libc::c_int - k
             {
                 let mut tmp: libc::c_int = u;
@@ -4291,13 +4196,8 @@ pub unsafe extern "C" fn getSpawn(mut g: *const Generator) -> Pos {
     } else {
         i = 0 as libc::c_int;
         while i < 1000 as libc::c_int {
-            let mut biome: libc::c_int = getBiomeAt(
-                g,
-                1 as libc::c_int,
-                spawn.x,
-                0 as libc::c_int,
-                spawn.z,
-            );
+            let mut biome: libc::c_int =
+                getBiomeAt(g, 1 as libc::c_int, spawn.x, 0 as libc::c_int, spawn.z);
             gp = getGrassProbability((*g).seed, biome, spawn.x, spawn.z);
             bx += accum * gp * spawn.x as libc::c_double;
             bz += accum * gp * spawn.z as libc::c_double;
@@ -4308,12 +4208,10 @@ pub unsafe extern "C" fn getSpawn(mut g: *const Generator) -> Pos {
                 spawn.z = round(bz / bn) as libc::c_int;
                 break;
             } else {
-                spawn.x
-                    += nextInt(&mut rnd, 64 as libc::c_int)
-                        - nextInt(&mut rnd, 64 as libc::c_int);
-                spawn.z
-                    += nextInt(&mut rnd, 64 as libc::c_int)
-                        - nextInt(&mut rnd, 64 as libc::c_int);
+                spawn.x +=
+                    nextInt(&mut rnd, 64 as libc::c_int) - nextInt(&mut rnd, 64 as libc::c_int);
+                spawn.z +=
+                    nextInt(&mut rnd, 64 as libc::c_int) - nextInt(&mut rnd, 64 as libc::c_int);
                 i += 1;
             }
         }
@@ -4359,14 +4257,15 @@ pub unsafe extern "C" fn isViableFeatureBiome(
 ) -> libc::c_int {
     match structureType {
         1 => {
-            return (biomeID == desert as libc::c_int
-                || biomeID == desert_hills as libc::c_int) as libc::c_int;
+            return (biomeID == desert as libc::c_int || biomeID == desert_hills as libc::c_int)
+                as libc::c_int;
         }
         2 => {
             return (biomeID == jungle as libc::c_int
                 || biomeID == jungle_hills as libc::c_int
                 || biomeID == bamboo_jungle as libc::c_int
-                || biomeID == bamboo_jungle_hills as libc::c_int) as libc::c_int;
+                || biomeID == bamboo_jungle_hills as libc::c_int)
+                as libc::c_int;
         }
         3 => return (biomeID == swamp as libc::c_int) as libc::c_int,
         4 => {
@@ -4387,7 +4286,8 @@ pub unsafe extern "C" fn isViableFeatureBiome(
             if mc < MC_1_13 as libc::c_int {
                 return 0 as libc::c_int;
             }
-            return (isOceanic(biomeID) != 0 || biomeID == beach as libc::c_int
+            return (isOceanic(biomeID) != 0
+                || biomeID == beach as libc::c_int
                 || biomeID == snowy_beach as libc::c_int) as libc::c_int;
         }
         11 | 12 => return (mc >= MC_1_16 as libc::c_int) as libc::c_int,
@@ -4401,8 +4301,8 @@ pub unsafe extern "C" fn isViableFeatureBiome(
             if mc < MC_1_13 as libc::c_int {
                 return 0 as libc::c_int;
             }
-            return (biomeID == beach as libc::c_int
-                || biomeID == snowy_beach as libc::c_int) as libc::c_int;
+            return (biomeID == beach as libc::c_int || biomeID == snowy_beach as libc::c_int)
+                as libc::c_int;
         }
         15 => return isOverworld(mc, biomeID),
         8 => {
@@ -4464,14 +4364,15 @@ pub unsafe extern "C" fn isViableFeatureBiome(
         _ => {
             fprintf(
                 stderr,
-                b"isViableFeatureBiome: not implemented for structure type %d.\n\0"
-                    as *const u8 as *const libc::c_char,
+                b"isViableFeatureBiome: not implemented for structure type %d.\n\0" as *const u8
+                    as *const libc::c_char,
                 structureType,
             );
             exit(1 as libc::c_int);
         }
     }
-    if biomeID == plains as libc::c_int || biomeID == desert as libc::c_int
+    if biomeID == plains as libc::c_int
+        || biomeID == desert as libc::c_int
         || biomeID == savanna as libc::c_int
     {
         return 1 as libc::c_int;
@@ -4510,8 +4411,8 @@ unsafe extern "C" fn getValidMonumentBiomes1() -> *const libc::c_char {
             < (::std::mem::size_of::<[libc::c_int; 12]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
         {
-            isValid[oceanMonumentBiomeList1[i as usize]
-                as usize] = 1 as libc::c_int as libc::c_char;
+            isValid[oceanMonumentBiomeList1[i as usize] as usize] =
+                1 as libc::c_int as libc::c_char;
             i = i.wrapping_add(1);
         }
     }
@@ -4533,8 +4434,8 @@ unsafe extern "C" fn getValidMonumentBiomes2() -> *const libc::c_char {
             < (::std::mem::size_of::<[libc::c_int; 5]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
         {
-            isValid[oceanMonumentBiomeList2[i as usize]
-                as usize] = 1 as libc::c_int as libc::c_char;
+            isValid[oceanMonumentBiomeList2[i as usize] as usize] =
+                1 as libc::c_int as libc::c_char;
             i = i.wrapping_add(1);
         }
     }
@@ -4553,8 +4454,7 @@ unsafe extern "C" fn getValidMansionBiomes() -> *const libc::c_char {
             < (::std::mem::size_of::<[libc::c_int; 2]>() as libc::c_ulong)
                 .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
         {
-            isValid[mansionBiomeList[i as usize]
-                as usize] = 1 as libc::c_int as libc::c_char;
+            isValid[mansionBiomeList[i as usize] as usize] = 1 as libc::c_int as libc::c_char;
             i = i.wrapping_add(1);
         }
     }
@@ -4572,8 +4472,8 @@ unsafe extern "C" fn mapViableBiome(
     if (err != 0 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return err;
     }
-    let mut styp: libc::c_int = *((*l).data as *const libc::c_int)
-        .offset(0 as libc::c_int as isize);
+    let mut styp: libc::c_int =
+        *((*l).data as *const libc::c_int).offset(0 as libc::c_int as isize);
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     j = 0 as libc::c_int;
@@ -4639,10 +4539,9 @@ unsafe extern "C" fn mapViableShore(
     if (err != 0 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return err;
     }
-    let mut styp: libc::c_int = *((*l).data as *const libc::c_int)
-        .offset(0 as libc::c_int as isize);
-    let mut mc: libc::c_int = *((*l).data as *const libc::c_int)
-        .offset(1 as libc::c_int as isize);
+    let mut styp: libc::c_int =
+        *((*l).data as *const libc::c_int).offset(0 as libc::c_int as isize);
+    let mut mc: libc::c_int = *((*l).data as *const libc::c_int).offset(1 as libc::c_int as isize);
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     j = 0 as libc::c_int;
@@ -4682,8 +4581,7 @@ pub unsafe extern "C" fn isViableStructurePos(
     let mut sampleY: libc::c_int = 0;
     let mut id: libc::c_int = 0;
     if (*g).dim == -(1 as libc::c_int) {
-        if structureType == Fortress as libc::c_int && (*g).mc <= MC_1_17 as libc::c_int
-        {
+        if structureType == Fortress as libc::c_int && (*g).mc <= MC_1_17 as libc::c_int {
             return 1 as libc::c_int;
         }
         if (*g).mc < MC_1_16 as libc::c_int {
@@ -4756,20 +4654,22 @@ pub unsafe extern "C" fn isViableStructurePos(
             );
             sampleX = (((chunkX << 5 as libc::c_int)
                 + (2 as libc::c_int * sv.x as libc::c_int) as libc::c_long
-                + sv.sx as libc::c_long) / 2 as libc::c_int as libc::c_long
+                + sv.sx as libc::c_long)
+                / 2 as libc::c_int as libc::c_long
                 >> 2 as libc::c_int) as libc::c_int;
             sampleZ = (((chunkZ << 5 as libc::c_int)
                 + (2 as libc::c_int * sv.z as libc::c_int) as libc::c_long
-                + sv.sz as libc::c_long) / 2 as libc::c_int as libc::c_long
+                + sv.sz as libc::c_long)
+                / 2 as libc::c_int as libc::c_long
                 >> 2 as libc::c_int) as libc::c_int;
             if (*g).mc >= MC_1_19 as libc::c_int {
                 sampleY = 33 as libc::c_int >> 2 as libc::c_int;
             }
         } else {
-            sampleX = ((chunkX << 2 as libc::c_int) + 2 as libc::c_int as libc::c_long)
-                as libc::c_int;
-            sampleZ = ((chunkZ << 2 as libc::c_int) + 2 as libc::c_int as libc::c_long)
-                as libc::c_int;
+            sampleX =
+                ((chunkX << 2 as libc::c_int) + 2 as libc::c_int as libc::c_long) as libc::c_int;
+            sampleZ =
+                ((chunkZ << 2 as libc::c_int) + 2 as libc::c_int as libc::c_long) as libc::c_int;
         }
         id = getBiomeAt(g, 4 as libc::c_int, sampleX, sampleY, sampleZ);
         return isViableFeatureBiome((*g).mc, structureType, id);
@@ -4833,29 +4733,14 @@ pub unsafe extern "C" fn isViableStructurePos(
     let mut entry: *mut Layer = 0 as *mut Layer;
     let mut data: [libc::c_int; 2] = [structureType, (*g).mc];
     if (*g).mc <= MC_1_17 as libc::c_int {
-        lbiome = (*g)
-            .c2rust_unnamed
-            .c2rust_unnamed
-            .ls
-            .layers[L_BIOME_256 as libc::c_int as usize];
-        lshore = (*g)
-            .c2rust_unnamed
-            .c2rust_unnamed
-            .ls
-            .layers[L_SHORE_16 as libc::c_int as usize];
+        lbiome = (*g).c2rust_unnamed.c2rust_unnamed.ls.layers[L_BIOME_256 as libc::c_int as usize];
+        lshore = (*g).c2rust_unnamed.c2rust_unnamed.ls.layers[L_SHORE_16 as libc::c_int as usize];
         entry = (*g).c2rust_unnamed.c2rust_unnamed.entry;
-        let ref mut fresh19 = (*g)
-            .c2rust_unnamed
-            .c2rust_unnamed
-            .ls
-            .layers[L_BIOME_256 as libc::c_int as usize]
-            .data;
+        let ref mut fresh19 =
+            (*g).c2rust_unnamed.c2rust_unnamed.ls.layers[L_BIOME_256 as libc::c_int as usize].data;
         *fresh19 = data.as_mut_ptr() as *mut libc::c_void;
-        let ref mut fresh20 = (*g)
-            .c2rust_unnamed
-            .c2rust_unnamed
-            .ls
-            .layers[L_BIOME_256 as libc::c_int as usize]
+        let ref mut fresh20 = (*g).c2rust_unnamed.c2rust_unnamed.ls.layers
+            [L_BIOME_256 as libc::c_int as usize]
             .getMap;
         *fresh20 = Some(
             mapViableBiome
@@ -4868,19 +4753,11 @@ pub unsafe extern "C" fn isViableStructurePos(
                     libc::c_int,
                 ) -> libc::c_int,
         );
-        let ref mut fresh21 = (*g)
-            .c2rust_unnamed
-            .c2rust_unnamed
-            .ls
-            .layers[L_SHORE_16 as libc::c_int as usize]
-            .data;
+        let ref mut fresh21 =
+            (*g).c2rust_unnamed.c2rust_unnamed.ls.layers[L_SHORE_16 as libc::c_int as usize].data;
         *fresh21 = data.as_mut_ptr() as *mut libc::c_void;
-        let ref mut fresh22 = (*g)
-            .c2rust_unnamed
-            .c2rust_unnamed
-            .ls
-            .layers[L_SHORE_16 as libc::c_int as usize]
-            .getMap;
+        let ref mut fresh22 =
+            (*g).c2rust_unnamed.c2rust_unnamed.ls.layers[L_SHORE_16 as libc::c_int as usize].getMap;
         *fresh22 = Some(
             mapViableShore
                 as unsafe extern "C" fn(
@@ -4917,41 +4794,35 @@ pub unsafe extern "C" fn isViableStructurePos(
                     let ref mut fresh25 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
                     *fresh25 = &mut *((*g).c2rust_unnamed.c2rust_unnamed.ls.layers)
                         .as_mut_ptr()
-                        .offset(L_VORONOI_1 as libc::c_int as isize) as *mut Layer;
-                    sampleX = ((chunkX << 4 as libc::c_int)
-                        + 9 as libc::c_int as libc::c_long) as libc::c_int;
-                    sampleZ = ((chunkZ << 4 as libc::c_int)
-                        + 9 as libc::c_int as libc::c_long) as libc::c_int;
+                        .offset(L_VORONOI_1 as libc::c_int as isize)
+                        as *mut Layer;
+                    sampleX = ((chunkX << 4 as libc::c_int) + 9 as libc::c_int as libc::c_long)
+                        as libc::c_int;
+                    sampleZ = ((chunkZ << 4 as libc::c_int) + 9 as libc::c_int as libc::c_long)
+                        as libc::c_int;
                 } else {
                     let ref mut fresh26 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
                     *fresh26 = &mut *((*g).c2rust_unnamed.c2rust_unnamed.ls.layers)
                         .as_mut_ptr()
-                        .offset(L_RIVER_MIX_4 as libc::c_int as isize) as *mut Layer;
-                    sampleX = ((chunkX << 2 as libc::c_int)
-                        + 2 as libc::c_int as libc::c_long) as libc::c_int;
-                    sampleZ = ((chunkZ << 2 as libc::c_int)
-                        + 2 as libc::c_int as libc::c_long) as libc::c_int;
+                        .offset(L_RIVER_MIX_4 as libc::c_int as isize)
+                        as *mut Layer;
+                    sampleX = ((chunkX << 2 as libc::c_int) + 2 as libc::c_int as libc::c_long)
+                        as libc::c_int;
+                    sampleZ = ((chunkZ << 2 as libc::c_int) + 2 as libc::c_int as libc::c_long)
+                        as libc::c_int;
                 }
                 id = getBiomeAt(g, 0 as libc::c_int, sampleX, 0 as libc::c_int, sampleZ);
-                if id < 0 as libc::c_int
-                    || isViableFeatureBiome((*g).mc, structureType, id) == 0
-                {
+                if id < 0 as libc::c_int || isViableFeatureBiome((*g).mc, structureType, id) == 0 {
                     current_block = 14993526094991803608;
                 } else if flags != 0 && id as uint32_t != flags {
                     current_block = 14993526094991803608;
                 } else {
                     if (*g).mc <= MC_1_9 as libc::c_int {
-                        sampleX = ((chunkX << 4 as libc::c_int)
-                            + 2 as libc::c_int as libc::c_long) as libc::c_int;
-                        sampleZ = ((chunkZ << 4 as libc::c_int)
-                            + 2 as libc::c_int as libc::c_long) as libc::c_int;
-                        id = getBiomeAt(
-                            g,
-                            1 as libc::c_int,
-                            sampleX,
-                            0 as libc::c_int,
-                            sampleZ,
-                        );
+                        sampleX = ((chunkX << 4 as libc::c_int) + 2 as libc::c_int as libc::c_long)
+                            as libc::c_int;
+                        sampleZ = ((chunkZ << 4 as libc::c_int) + 2 as libc::c_int as libc::c_long)
+                            as libc::c_int;
+                        id = getBiomeAt(g, 1 as libc::c_int, sampleX, 0 as libc::c_int, sampleZ);
                         if id < 0 as libc::c_int
                             || isViableFeatureBiome((*g).mc, structureType, id) == 0
                         {
@@ -4983,9 +4854,7 @@ pub unsafe extern "C" fn isViableStructurePos(
                 loop {
                     if !(i
                         < (::std::mem::size_of::<[libc::c_int; 5]>() as libc::c_ulong)
-                            .wrapping_div(
-                                ::std::mem::size_of::<libc::c_int>() as libc::c_ulong,
-                            ))
+                            .wrapping_div(::std::mem::size_of::<libc::c_int>() as libc::c_ulong))
                     {
                         current_block = 14993526094991803608;
                         break;
@@ -5017,11 +4886,13 @@ pub unsafe extern "C" fn isViableStructurePos(
                         );
                         sampleX = (((chunkX << 5 as libc::c_int)
                             + (2 as libc::c_int * sv_0.x as libc::c_int) as libc::c_long
-                            + sv_0.sx as libc::c_long) / 2 as libc::c_int as libc::c_long
+                            + sv_0.sx as libc::c_long)
+                            / 2 as libc::c_int as libc::c_long
                             >> 2 as libc::c_int) as libc::c_int;
                         sampleZ = (((chunkZ << 5 as libc::c_int)
                             + (2 as libc::c_int * sv_0.z as libc::c_int) as libc::c_long
-                            + sv_0.sz as libc::c_long) / 2 as libc::c_int as libc::c_long
+                            + sv_0.sz as libc::c_long)
+                            / 2 as libc::c_int as libc::c_long
                             >> 2 as libc::c_int) as libc::c_int;
                         sampleY = 319 as libc::c_int >> 2 as libc::c_int;
                         id = getBiomeAt(g, 0 as libc::c_int, sampleX, sampleY, sampleZ);
@@ -5054,30 +4925,24 @@ pub unsafe extern "C" fn isViableStructurePos(
                         structType: 0,
                         properties: 0,
                     };
-                    if getStructureConfig(Village as libc::c_int, (*g).mc, &mut vilconf)
-                        == 0
-                    {
+                    if getStructureConfig(Village as libc::c_int, (*g).mc, &mut vilconf) == 0 {
                         current_block = 14993526094991803608;
                     } else {
-                        let mut cx0: libc::c_int = (chunkX
-                            - 10 as libc::c_int as libc::c_long) as libc::c_int;
-                        let mut cx1: libc::c_int = (chunkX
-                            + 10 as libc::c_int as libc::c_long) as libc::c_int;
-                        let mut cz0: libc::c_int = (chunkZ
-                            - 10 as libc::c_int as libc::c_long) as libc::c_int;
-                        let mut cz1: libc::c_int = (chunkZ
-                            + 10 as libc::c_int as libc::c_long) as libc::c_int;
-                        let mut rx0: libc::c_int = cx0
-                            / vilconf.regionSize as libc::c_int
+                        let mut cx0: libc::c_int =
+                            (chunkX - 10 as libc::c_int as libc::c_long) as libc::c_int;
+                        let mut cx1: libc::c_int =
+                            (chunkX + 10 as libc::c_int as libc::c_long) as libc::c_int;
+                        let mut cz0: libc::c_int =
+                            (chunkZ - 10 as libc::c_int as libc::c_long) as libc::c_int;
+                        let mut cz1: libc::c_int =
+                            (chunkZ + 10 as libc::c_int as libc::c_long) as libc::c_int;
+                        let mut rx0: libc::c_int = cx0 / vilconf.regionSize as libc::c_int
                             - (cx0 < 0 as libc::c_int) as libc::c_int;
-                        let mut rx1: libc::c_int = cx1
-                            / vilconf.regionSize as libc::c_int
+                        let mut rx1: libc::c_int = cx1 / vilconf.regionSize as libc::c_int
                             - (cx1 < 0 as libc::c_int) as libc::c_int;
-                        let mut rz0: libc::c_int = cz0
-                            / vilconf.regionSize as libc::c_int
+                        let mut rz0: libc::c_int = cz0 / vilconf.regionSize as libc::c_int
                             - (cz0 < 0 as libc::c_int) as libc::c_int;
-                        let mut rz1: libc::c_int = cz1
-                            / vilconf.regionSize as libc::c_int
+                        let mut rz1: libc::c_int = cz1 / vilconf.regionSize as libc::c_int
                             - (cz1 < 0 as libc::c_int) as libc::c_int;
                         let mut rx: libc::c_int = 0;
                         let mut rz: libc::c_int = 0;
@@ -5148,45 +5013,38 @@ pub unsafe extern "C" fn isViableStructurePos(
                                     }
                                     sampleX = (((chunkX << 5 as libc::c_int)
                                         + sampleX as libc::c_long)
-                                        / 2 as libc::c_int as libc::c_long >> 2 as libc::c_int)
+                                        / 2 as libc::c_int as libc::c_long
+                                        >> 2 as libc::c_int)
                                         as libc::c_int;
                                     sampleZ = (((chunkZ << 5 as libc::c_int)
                                         + sampleZ as libc::c_long)
-                                        / 2 as libc::c_int as libc::c_long >> 2 as libc::c_int)
+                                        / 2 as libc::c_int as libc::c_long
+                                        >> 2 as libc::c_int)
                                         as libc::c_int;
                                 } else if (*g).mc >= MC_1_16 as libc::c_int {
-                                    let ref mut fresh27 = (*g)
-                                        .c2rust_unnamed
-                                        .c2rust_unnamed
-                                        .entry;
-                                    *fresh27 = &mut *((*g)
-                                        .c2rust_unnamed
-                                        .c2rust_unnamed
-                                        .ls
-                                        .layers)
+                                    let ref mut fresh27 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
+                                    *fresh27 = &mut *((*g).c2rust_unnamed.c2rust_unnamed.ls.layers)
                                         .as_mut_ptr()
                                         .offset(L_RIVER_MIX_4 as libc::c_int as isize)
                                         as *mut Layer;
                                     sampleX = ((chunkX << 2 as libc::c_int)
-                                        + 2 as libc::c_int as libc::c_long) as libc::c_int;
+                                        + 2 as libc::c_int as libc::c_long)
+                                        as libc::c_int;
                                     sampleZ = ((chunkZ << 2 as libc::c_int)
-                                        + 2 as libc::c_int as libc::c_long) as libc::c_int;
+                                        + 2 as libc::c_int as libc::c_long)
+                                        as libc::c_int;
                                 } else {
-                                    let ref mut fresh28 = (*g)
-                                        .c2rust_unnamed
-                                        .c2rust_unnamed
-                                        .entry;
-                                    *fresh28 = &mut *((*g)
-                                        .c2rust_unnamed
-                                        .c2rust_unnamed
-                                        .ls
-                                        .layers)
+                                    let ref mut fresh28 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
+                                    *fresh28 = &mut *((*g).c2rust_unnamed.c2rust_unnamed.ls.layers)
                                         .as_mut_ptr()
-                                        .offset(L_VORONOI_1 as libc::c_int as isize) as *mut Layer;
+                                        .offset(L_VORONOI_1 as libc::c_int as isize)
+                                        as *mut Layer;
                                     sampleX = ((chunkX << 4 as libc::c_int)
-                                        + 9 as libc::c_int as libc::c_long) as libc::c_int;
+                                        + 9 as libc::c_int as libc::c_long)
+                                        as libc::c_int;
                                     sampleZ = ((chunkZ << 4 as libc::c_int)
-                                        + 9 as libc::c_int as libc::c_long) as libc::c_int;
+                                        + 9 as libc::c_int as libc::c_long)
+                                        as libc::c_int;
                                 }
                                 id = getBiomeAt(
                                     g,
@@ -5231,7 +5089,8 @@ pub unsafe extern "C" fn isViableStructurePos(
                     let ref mut fresh29 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
                     *fresh29 = &mut *((*g).c2rust_unnamed.c2rust_unnamed.ls.layers)
                         .as_mut_ptr()
-                        .offset(L_SHORE_16 as libc::c_int as isize) as *mut Layer;
+                        .offset(L_SHORE_16 as libc::c_int as isize)
+                        as *mut Layer;
                     id = getBiomeAt(
                         g,
                         0 as libc::c_int,
@@ -5250,13 +5109,11 @@ pub unsafe extern "C" fn isViableStructurePos(
                 match current_block {
                     14993526094991803608 => {}
                     _ => {
-                        sampleX = ((chunkX << 4 as libc::c_int)
-                            + 8 as libc::c_int as libc::c_long) as libc::c_int;
-                        sampleZ = ((chunkZ << 4 as libc::c_int)
-                            + 8 as libc::c_int as libc::c_long) as libc::c_int;
-                        if (*g).mc >= MC_1_9 as libc::c_int
-                            && (*g).mc <= MC_1_17 as libc::c_int
-                        {
+                        sampleX = ((chunkX << 4 as libc::c_int) + 8 as libc::c_int as libc::c_long)
+                            as libc::c_int;
+                        sampleZ = ((chunkZ << 4 as libc::c_int) + 8 as libc::c_int as libc::c_long)
+                            as libc::c_int;
+                        if (*g).mc >= MC_1_9 as libc::c_int && (*g).mc <= MC_1_17 as libc::c_int {
                             if areBiomesViable(
                                 g,
                                 sampleX,
@@ -5314,10 +5171,10 @@ pub unsafe extern "C" fn isViableStructurePos(
             if (*g).mc < MC_1_11 as libc::c_int {
                 current_block = 14993526094991803608;
             } else if (*g).mc <= MC_1_17 as libc::c_int {
-                sampleX = ((chunkX << 4 as libc::c_int)
-                    + 8 as libc::c_int as libc::c_long) as libc::c_int;
-                sampleZ = ((chunkZ << 4 as libc::c_int)
-                    + 8 as libc::c_int as libc::c_long) as libc::c_int;
+                sampleX = ((chunkX << 4 as libc::c_int) + 8 as libc::c_int as libc::c_long)
+                    as libc::c_int;
+                sampleZ = ((chunkZ << 4 as libc::c_int) + 8 as libc::c_int as libc::c_long)
+                    as libc::c_int;
                 if areBiomesViable(
                     g,
                     sampleX,
@@ -5333,10 +5190,10 @@ pub unsafe extern "C" fn isViableStructurePos(
                     current_block = 4996352559381616237;
                 }
             } else {
-                sampleX = ((chunkX << 4 as libc::c_int)
-                    + 7 as libc::c_int as libc::c_long) as libc::c_int;
-                sampleZ = ((chunkZ << 4 as libc::c_int)
-                    + 7 as libc::c_int as libc::c_long) as libc::c_int;
+                sampleX = ((chunkX << 4 as libc::c_int) + 7 as libc::c_int as libc::c_long)
+                    as libc::c_int;
+                sampleZ = ((chunkZ << 4 as libc::c_int) + 7 as libc::c_int as libc::c_long)
+                    as libc::c_int;
                 id = getBiomeAt(
                     g,
                     4 as libc::c_int,
@@ -5344,9 +5201,7 @@ pub unsafe extern "C" fn isViableStructurePos(
                     319 as libc::c_int >> 4 as libc::c_int,
                     sampleZ >> 2 as libc::c_int,
                 );
-                if id < 0 as libc::c_int
-                    || isViableFeatureBiome((*g).mc, structureType, id) == 0
-                {
+                if id < 0 as libc::c_int || isViableFeatureBiome((*g).mc, structureType, id) == 0 {
                     current_block = 14993526094991803608;
                 } else {
                     current_block = 4996352559381616237;
@@ -5390,17 +5245,17 @@ pub unsafe extern "C" fn isViableStructurePos(
                 );
                 sampleX = (((chunkX << 5 as libc::c_int)
                     + (2 as libc::c_int * sv_1.x as libc::c_int) as libc::c_long
-                    + sv_1.sx as libc::c_long) / 2 as libc::c_int as libc::c_long
+                    + sv_1.sx as libc::c_long)
+                    / 2 as libc::c_int as libc::c_long
                     >> 2 as libc::c_int) as libc::c_int;
                 sampleZ = (((chunkZ << 5 as libc::c_int)
                     + (2 as libc::c_int * sv_1.z as libc::c_int) as libc::c_long
-                    + sv_1.sz as libc::c_long) / 2 as libc::c_int as libc::c_long
+                    + sv_1.sz as libc::c_long)
+                    / 2 as libc::c_int as libc::c_long
                     >> 2 as libc::c_int) as libc::c_int;
                 sampleY = -(27 as libc::c_int) >> 2 as libc::c_int;
                 id = getBiomeAt(g, 4 as libc::c_int, sampleX, sampleY, sampleZ);
-                if id < 0 as libc::c_int
-                    || isViableFeatureBiome((*g).mc, structureType, id) == 0
-                {
+                if id < 0 as libc::c_int || isViableFeatureBiome((*g).mc, structureType, id) == 0 {
                     current_block = 14993526094991803608;
                 } else {
                     current_block = 4996352559381616237;
@@ -5427,21 +5282,23 @@ pub unsafe extern "C" fn isViableStructurePos(
                     let ref mut fresh23 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
                     *fresh23 = &mut *((*g).c2rust_unnamed.c2rust_unnamed.ls.layers)
                         .as_mut_ptr()
-                        .offset(L_RIVER_MIX_4 as libc::c_int as isize) as *mut Layer;
+                        .offset(L_RIVER_MIX_4 as libc::c_int as isize)
+                        as *mut Layer;
                 }
-                sampleX = ((chunkX << 2 as libc::c_int)
-                    + 2 as libc::c_int as libc::c_long) as libc::c_int;
-                sampleZ = ((chunkZ << 2 as libc::c_int)
-                    + 2 as libc::c_int as libc::c_long) as libc::c_int;
+                sampleX = ((chunkX << 2 as libc::c_int) + 2 as libc::c_int as libc::c_long)
+                    as libc::c_int;
+                sampleZ = ((chunkZ << 2 as libc::c_int) + 2 as libc::c_int as libc::c_long)
+                    as libc::c_int;
             } else {
                 let ref mut fresh24 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
                 *fresh24 = &mut *((*g).c2rust_unnamed.c2rust_unnamed.ls.layers)
                     .as_mut_ptr()
-                    .offset(L_VORONOI_1 as libc::c_int as isize) as *mut Layer;
-                sampleX = ((chunkX << 4 as libc::c_int)
-                    + 9 as libc::c_int as libc::c_long) as libc::c_int;
-                sampleZ = ((chunkZ << 4 as libc::c_int)
-                    + 9 as libc::c_int as libc::c_long) as libc::c_int;
+                    .offset(L_VORONOI_1 as libc::c_int as isize)
+                    as *mut Layer;
+                sampleX = ((chunkX << 4 as libc::c_int) + 9 as libc::c_int as libc::c_long)
+                    as libc::c_int;
+                sampleZ = ((chunkZ << 4 as libc::c_int) + 9 as libc::c_int as libc::c_long)
+                    as libc::c_int;
             }
             id = getBiomeAt(
                 g,
@@ -5450,9 +5307,7 @@ pub unsafe extern "C" fn isViableStructurePos(
                 319 as libc::c_int >> 2 as libc::c_int,
                 sampleZ,
             );
-            if id < 0 as libc::c_int
-                || isViableFeatureBiome((*g).mc, structureType, id) == 0
-            {
+            if id < 0 as libc::c_int || isViableFeatureBiome((*g).mc, structureType, id) == 0 {
                 current_block = 14993526094991803608;
             } else {
                 current_block = 4996352559381616237;
@@ -5469,16 +5324,8 @@ pub unsafe extern "C" fn isViableStructurePos(
         _ => {}
     }
     if (*g).mc <= MC_1_17 as libc::c_int {
-        (*g)
-            .c2rust_unnamed
-            .c2rust_unnamed
-            .ls
-            .layers[L_BIOME_256 as libc::c_int as usize] = lbiome;
-        (*g)
-            .c2rust_unnamed
-            .c2rust_unnamed
-            .ls
-            .layers[L_SHORE_16 as libc::c_int as usize] = lshore;
+        (*g).c2rust_unnamed.c2rust_unnamed.ls.layers[L_BIOME_256 as libc::c_int as usize] = lbiome;
+        (*g).c2rust_unnamed.c2rust_unnamed.ls.layers[L_SHORE_16 as libc::c_int as usize] = lshore;
         let ref mut fresh30 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
         *fresh30 = entry;
     }
@@ -5497,9 +5344,7 @@ pub unsafe extern "C" fn isViableStructureTerrain(
     if (*g).mc < MC_1_18 as libc::c_int {
         return 1 as libc::c_int;
     }
-    if structType == Desert_Pyramid as libc::c_int
-        || structType == Jungle_Temple as libc::c_int
-    {
+    if structType == Desert_Pyramid as libc::c_int || structType == Jungle_Temple as libc::c_int {
         sx = if structType == Desert_Pyramid as libc::c_int {
             21 as libc::c_int
         } else {
@@ -5530,7 +5375,7 @@ pub unsafe extern "C" fn isViableStructureTerrain(
         x = (cx << 4 as libc::c_int) + 7 as libc::c_int;
         z = (cz << 4 as libc::c_int) + 7 as libc::c_int;
     } else {
-        return 1 as libc::c_int
+        return 1 as libc::c_int;
     }
     id = getBiomeAt(
         g,
@@ -5539,9 +5384,7 @@ pub unsafe extern "C" fn isViableStructureTerrain(
         15 as libc::c_int,
         z >> 2 as libc::c_int,
     );
-    if isOceanic(id) != 0 || id == river as libc::c_int
-        || id == frozen_river as libc::c_int
-    {
+    if isOceanic(id) != 0 || id == river as libc::c_int || id == frozen_river as libc::c_int {
         return 0 as libc::c_int;
     }
     id = getBiomeAt(
@@ -5551,9 +5394,7 @@ pub unsafe extern "C" fn isViableStructureTerrain(
         15 as libc::c_int,
         z + sz >> 2 as libc::c_int,
     );
-    if isOceanic(id) != 0 || id == river as libc::c_int
-        || id == frozen_river as libc::c_int
-    {
+    if isOceanic(id) != 0 || id == river as libc::c_int || id == frozen_river as libc::c_int {
         return 0 as libc::c_int;
     }
     id = getBiomeAt(
@@ -5563,9 +5404,7 @@ pub unsafe extern "C" fn isViableStructureTerrain(
         15 as libc::c_int,
         z + sz >> 2 as libc::c_int,
     );
-    if isOceanic(id) != 0 || id == river as libc::c_int
-        || id == frozen_river as libc::c_int
-    {
+    if isOceanic(id) != 0 || id == river as libc::c_int || id == frozen_river as libc::c_int {
         return 0 as libc::c_int;
     }
     return 1 as libc::c_int;
@@ -5645,15 +5484,13 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
     setSeed(
         &mut cs,
         (chunkX as libc::c_ulonglong)
-            .wrapping_add(
-                (chunkZ as libc::c_ulonglong).wrapping_mul(10387313 as libc::c_ulonglong),
-            ) as uint64_t,
+            .wrapping_add((chunkZ as libc::c_ulonglong).wrapping_mul(10387313 as libc::c_ulonglong))
+            as uint64_t,
     );
     match nextInt(&mut cs, 4 as libc::c_int) {
         0 => {
             sampleNoiseColumnEnd(
-                (ncol[0 as libc::c_int as usize][2 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[0 as libc::c_int as usize][2 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 0 as libc::c_int,
@@ -5662,8 +5499,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y1,
             );
             sampleNoiseColumnEnd(
-                (ncol[1 as libc::c_int as usize][2 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[1 as libc::c_int as usize][2 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 1 as libc::c_int,
@@ -5672,8 +5508,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y1,
             );
             sampleNoiseColumnEnd(
-                (ncol[2 as libc::c_int as usize][0 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[2 as libc::c_int as usize][0 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 2 as libc::c_int,
@@ -5682,8 +5517,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y1,
             );
             sampleNoiseColumnEnd(
-                (ncol[2 as libc::c_int as usize][1 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[2 as libc::c_int as usize][1 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 2 as libc::c_int,
@@ -5692,8 +5526,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y1,
             );
             sampleNoiseColumnEnd(
-                (ncol[2 as libc::c_int as usize][2 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[2 as libc::c_int as usize][2 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 2 as libc::c_int,
@@ -5728,8 +5561,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y0,
                 y1,
                 4 as libc::c_int,
-                (blockX + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double
-                    / 8.0f64,
+                (blockX + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
                 (blockZ & 7 as libc::c_int) as libc::c_double / 8.0f64,
             );
             h11 = getSurfaceHeight(
@@ -5744,15 +5576,13 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y0,
                 y1,
                 4 as libc::c_int,
-                (blockX + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double
-                    / 8.0f64,
+                (blockX + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
                 (blockZ + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
             );
         }
         1 => {
             sampleNoiseColumnEnd(
-                (ncol[0 as libc::c_int as usize][2 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[0 as libc::c_int as usize][2 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 0 as libc::c_int,
@@ -5761,8 +5591,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y1,
             );
             sampleNoiseColumnEnd(
-                (ncol[1 as libc::c_int as usize][2 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[1 as libc::c_int as usize][2 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 1 as libc::c_int,
@@ -5797,8 +5626,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y0,
                 y1,
                 4 as libc::c_int,
-                (blockX - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double
-                    / 8.0f64,
+                (blockX - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
                 (blockZ & 7 as libc::c_int) as libc::c_double / 8.0f64,
             );
             h11 = getSurfaceHeight(
@@ -5813,8 +5641,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y0,
                 y1,
                 4 as libc::c_int,
-                (blockX - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double
-                    / 8.0f64,
+                (blockX - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
                 (blockZ + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
             );
         }
@@ -5846,8 +5673,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y0,
                 y1,
                 4 as libc::c_int,
-                (blockX - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double
-                    / 8.0f64,
+                (blockX - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
                 (blockZ & 7 as libc::c_int) as libc::c_double / 8.0f64,
             );
             h11 = getSurfaceHeight(
@@ -5862,15 +5688,13 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y0,
                 y1,
                 4 as libc::c_int,
-                (blockX - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double
-                    / 8.0f64,
+                (blockX - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
                 (blockZ - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
             );
         }
         3 => {
             sampleNoiseColumnEnd(
-                (ncol[2 as libc::c_int as usize][0 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[2 as libc::c_int as usize][0 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 2 as libc::c_int,
@@ -5879,8 +5703,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y1,
             );
             sampleNoiseColumnEnd(
-                (ncol[2 as libc::c_int as usize][1 as libc::c_int as usize])
-                    .as_mut_ptr(),
+                (ncol[2 as libc::c_int as usize][1 as libc::c_int as usize]).as_mut_ptr(),
                 sn,
                 en,
                 cellx + 2 as libc::c_int,
@@ -5915,8 +5738,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y0,
                 y1,
                 4 as libc::c_int,
-                (blockX + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double
-                    / 8.0f64,
+                (blockX + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
                 (blockZ & 7 as libc::c_int) as libc::c_double / 8.0f64,
             );
             h11 = getSurfaceHeight(
@@ -5931,8 +5753,7 @@ pub unsafe extern "C" fn isViableEndCityTerrain(
                 y0,
                 y1,
                 4 as libc::c_int,
-                (blockX + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double
-                    / 8.0f64,
+                (blockX + 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
                 (blockZ - 5 as libc::c_int & 7 as libc::c_int) as libc::c_double / 8.0f64,
             );
         }
@@ -5963,11 +5784,7 @@ pub unsafe extern "C" fn getVariant(
     let mut sx: libc::c_char = 0;
     let mut sy: libc::c_char = 0;
     let mut sz: libc::c_char = 0;
-    let mut rng: uint64_t = chunkGenerateRnd(
-        seed,
-        x >> 4 as libc::c_int,
-        z >> 4 as libc::c_int,
-    );
+    let mut rng: uint64_t = chunkGenerateRnd(seed, x >> 4 as libc::c_int, z >> 4 as libc::c_int);
     memset(
         r as *mut libc::c_void,
         0 as libc::c_int,
@@ -5992,9 +5809,8 @@ pub unsafe extern "C" fn getVariant(
                         11 as libc::c_int
                     }) as uint64_t,
                 );
-                (*r)
-                    .abandoned = (nextInt(&mut rng, 50 as libc::c_int)
-                    == 0 as libc::c_int) as libc::c_int as uint8_t;
+                (*r).abandoned = (nextInt(&mut rng, 50 as libc::c_int) == 0 as libc::c_int)
+                    as libc::c_int as uint8_t;
                 return 1 as libc::c_int;
             }
             (*r).biome = biomeID as libc::c_short;
@@ -6243,9 +6059,7 @@ pub unsafe extern "C" fn getVariant(
         }
         13 => {
             (*r).rotation = nextInt(&mut rng, 4 as libc::c_int) as uint8_t;
-            (*r)
-                .variant = (1 as libc::c_int + nextInt(&mut rng, 3 as libc::c_int))
-                as libc::c_char;
+            (*r).variant = (1 as libc::c_int + nextInt(&mut rng, 3 as libc::c_int)) as libc::c_char;
             sx = 18 as libc::c_int as libc::c_char;
             sy = 31 as libc::c_int as libc::c_char;
             sz = 41 as libc::c_int as libc::c_char;
@@ -6253,13 +6067,11 @@ pub unsafe extern "C" fn getVariant(
         11 => {
             (*r).giant = (nextFloat(&mut rng) < 0.05f32) as libc::c_int as uint8_t;
             if (*r).giant != 0 {
-                (*r)
-                    .variant = (1 as libc::c_int + nextInt(&mut rng, 3 as libc::c_int))
-                    as libc::c_char;
+                (*r).variant =
+                    (1 as libc::c_int + nextInt(&mut rng, 3 as libc::c_int)) as libc::c_char;
             } else {
-                (*r)
-                    .variant = (1 as libc::c_int + nextInt(&mut rng, 10 as libc::c_int))
-                    as libc::c_char;
+                (*r).variant =
+                    (1 as libc::c_int + nextInt(&mut rng, 10 as libc::c_int)) as libc::c_char;
             }
             (*r).rotation = nextInt(&mut rng, 4 as libc::c_int) as uint8_t;
             (*r).mirror = (nextFloat(&mut rng) < 0.05f32) as libc::c_int as uint8_t;
@@ -6301,28 +6113,20 @@ pub unsafe extern "C" fn getVariant(
             (*r).sz = sz;
         }
         1 => {
-            (*r)
-                .x = ((x > 0 as libc::c_int) as libc::c_int - sz as libc::c_int)
-                as libc::c_char;
+            (*r).x = ((x > 0 as libc::c_int) as libc::c_int - sz as libc::c_int) as libc::c_char;
             (*r).z = -((z < 0 as libc::c_int) as libc::c_int) as libc::c_char;
             (*r).sx = sz;
             (*r).sz = sx;
         }
         2 => {
-            (*r)
-                .x = ((x > 0 as libc::c_int) as libc::c_int - sx as libc::c_int)
-                as libc::c_char;
-            (*r)
-                .z = ((z > 0 as libc::c_int) as libc::c_int - sz as libc::c_int)
-                as libc::c_char;
+            (*r).x = ((x > 0 as libc::c_int) as libc::c_int - sx as libc::c_int) as libc::c_char;
+            (*r).z = ((z > 0 as libc::c_int) as libc::c_int - sz as libc::c_int) as libc::c_char;
             (*r).sx = sx;
             (*r).sz = sz;
         }
         3 => {
             (*r).x = -((x < 0 as libc::c_int) as libc::c_int) as libc::c_char;
-            (*r)
-                .z = ((z > 0 as libc::c_int) as libc::c_int - sx as libc::c_int)
-                as libc::c_char;
+            (*r).z = ((z > 0 as libc::c_int) as libc::c_int - sx as libc::c_int) as libc::c_char;
             (*r).sx = sz;
             (*r).sz = sx;
         }
@@ -6370,51 +6174,42 @@ pub unsafe extern "C" fn getHouseList(
 ) -> uint64_t {
     let mut rng: uint64_t = chunkGenerateRnd(worldSeed, chunkX, chunkZ);
     skipNextN(&mut rng, 1 as libc::c_int as uint64_t);
-    *out
-        .offset(
-            HouseSmall as libc::c_int as isize,
-        ) = nextInt(&mut rng, 4 as libc::c_int - 2 as libc::c_int + 1 as libc::c_int)
-        + 2 as libc::c_int;
-    *out
-        .offset(
-            Church as libc::c_int as isize,
-        ) = nextInt(&mut rng, 1 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int)
-        + 0 as libc::c_int;
-    *out
-        .offset(
-            Library as libc::c_int as isize,
-        ) = nextInt(&mut rng, 2 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int)
-        + 0 as libc::c_int;
-    *out
-        .offset(
-            WoodHut as libc::c_int as isize,
-        ) = nextInt(&mut rng, 5 as libc::c_int - 2 as libc::c_int + 1 as libc::c_int)
-        + 2 as libc::c_int;
-    *out
-        .offset(
-            Butcher as libc::c_int as isize,
-        ) = nextInt(&mut rng, 2 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int)
-        + 0 as libc::c_int;
-    *out
-        .offset(
-            FarmLarge as libc::c_int as isize,
-        ) = nextInt(&mut rng, 4 as libc::c_int - 1 as libc::c_int + 1 as libc::c_int)
-        + 1 as libc::c_int;
-    *out
-        .offset(
-            FarmSmall as libc::c_int as isize,
-        ) = nextInt(&mut rng, 4 as libc::c_int - 2 as libc::c_int + 1 as libc::c_int)
-        + 2 as libc::c_int;
-    *out
-        .offset(
-            Blacksmith as libc::c_int as isize,
-        ) = nextInt(&mut rng, 1 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int)
-        + 0 as libc::c_int;
-    *out
-        .offset(
-            HouseLarge as libc::c_int as isize,
-        ) = nextInt(&mut rng, 3 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int)
-        + 0 as libc::c_int;
+    *out.offset(HouseSmall as libc::c_int as isize) = nextInt(
+        &mut rng,
+        4 as libc::c_int - 2 as libc::c_int + 1 as libc::c_int,
+    ) + 2 as libc::c_int;
+    *out.offset(Church as libc::c_int as isize) = nextInt(
+        &mut rng,
+        1 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int,
+    ) + 0 as libc::c_int;
+    *out.offset(Library as libc::c_int as isize) = nextInt(
+        &mut rng,
+        2 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int,
+    ) + 0 as libc::c_int;
+    *out.offset(WoodHut as libc::c_int as isize) = nextInt(
+        &mut rng,
+        5 as libc::c_int - 2 as libc::c_int + 1 as libc::c_int,
+    ) + 2 as libc::c_int;
+    *out.offset(Butcher as libc::c_int as isize) = nextInt(
+        &mut rng,
+        2 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int,
+    ) + 0 as libc::c_int;
+    *out.offset(FarmLarge as libc::c_int as isize) = nextInt(
+        &mut rng,
+        4 as libc::c_int - 1 as libc::c_int + 1 as libc::c_int,
+    ) + 1 as libc::c_int;
+    *out.offset(FarmSmall as libc::c_int as isize) = nextInt(
+        &mut rng,
+        4 as libc::c_int - 2 as libc::c_int + 1 as libc::c_int,
+    ) + 2 as libc::c_int;
+    *out.offset(Blacksmith as libc::c_int as isize) = nextInt(
+        &mut rng,
+        1 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int,
+    ) + 0 as libc::c_int;
+    *out.offset(HouseLarge as libc::c_int as isize) = nextInt(
+        &mut rng,
+        3 as libc::c_int - 0 as libc::c_int + 1 as libc::c_int,
+    ) + 0 as libc::c_int;
     return rng;
 }
 #[no_mangle]
@@ -6442,12 +6237,12 @@ pub unsafe extern "C" fn setupBiomeFilter(
         id = *matchany.offset(i as isize);
         if id < 128 as libc::c_int {
             let ref mut fresh41 = (*bf).biomeToPick;
-            *fresh41 = (*fresh41 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
-                as uint64_t;
+            *fresh41 = (*fresh41 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
         } else {
             let ref mut fresh42 = (*bf).biomeToPickM;
             *fresh42 = (*fresh42 as libc::c_ulonglong
-                | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                as uint64_t;
         }
         let mut ibf: BiomeFilter = BiomeFilter {
             tempsToFind: 0,
@@ -6542,12 +6337,12 @@ pub unsafe extern "C" fn setupBiomeFilter(
         }
         if id < 128 as libc::c_int {
             let ref mut fresh54 = (*bf).biomeToExcl;
-            *fresh54 = (*fresh54 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
-                as uint64_t;
+            *fresh54 = (*fresh54 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
         } else {
             let ref mut fresh55 = (*bf).biomeToExclM;
             *fresh55 = (*fresh55 as libc::c_ulonglong
-                | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                as uint64_t;
         }
         i += 1;
     }
@@ -6567,8 +6362,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
             genPotential(&mut b, &mut m, L_SPECIAL_1024 as libc::c_int, mc, temp);
             if (*bf).biomeToExcl & b != 0 || (*bf).biomeToExclM & m != 0 {
                 let ref mut fresh56 = (*bf).tempsToExcl;
-                *fresh56 = (*fresh56 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << j) as uint64_t;
+                *fresh56 =
+                    (*fresh56 as libc::c_ulonglong | (1 as libc::c_ulonglong) << j) as uint64_t;
             }
             j += 1;
         }
@@ -6581,8 +6376,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
                     genPotential(&mut b, &mut m, L_BIOME_256 as libc::c_int, mc, j);
                     if !(*bf).biomeToExcl & b != 0 || !(*bf).biomeToExclM & m != 0 {
                         let ref mut fresh57 = (*bf).majorToExcl;
-                        *fresh57 = (*fresh57 as libc::c_ulonglong
-                            | (1 as libc::c_ulonglong) << j) as uint64_t;
+                        *fresh57 = (*fresh57 as libc::c_ulonglong | (1 as libc::c_ulonglong) << j)
+                            as uint64_t;
                     }
                 }
                 m = 0 as libc::c_int as uint64_t;
@@ -6591,8 +6386,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
                 if !(*bf).biomeToExcl & b != 0 || !(*bf).biomeToExclM & m != 0 {
                     if j < 128 as libc::c_int {
                         let ref mut fresh58 = (*bf).edgesToExcl;
-                        *fresh58 = (*fresh58 as libc::c_ulonglong
-                            | (1 as libc::c_ulonglong) << j) as uint64_t;
+                        *fresh58 = (*fresh58 as libc::c_ulonglong | (1 as libc::c_ulonglong) << j)
+                            as uint64_t;
                     } else {
                         let ref mut fresh59 = (*bf).edgesToExcl;
                         *fresh59 = (*fresh59 as libc::c_ulonglong
@@ -6606,8 +6401,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
                 if !(*bf).biomeToExcl & b != 0 || !(*bf).biomeToExclM & m != 0 {
                     if j < 128 as libc::c_int {
                         let ref mut fresh60 = (*bf).raresToExcl;
-                        *fresh60 = (*fresh60 as libc::c_ulonglong
-                            | (1 as libc::c_ulonglong) << j) as uint64_t;
+                        *fresh60 = (*fresh60 as libc::c_ulonglong | (1 as libc::c_ulonglong) << j)
+                            as uint64_t;
                     } else {
                         let ref mut fresh61 = (*bf).raresToExclM;
                         *fresh61 = (*fresh61 as libc::c_ulonglong
@@ -6621,8 +6416,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
                 if !(*bf).biomeToExcl & b != 0 || !(*bf).biomeToExclM & m != 0 {
                     if j < 128 as libc::c_int {
                         let ref mut fresh62 = (*bf).shoreToExcl;
-                        *fresh62 = (*fresh62 as libc::c_ulonglong
-                            | (1 as libc::c_ulonglong) << j) as uint64_t;
+                        *fresh62 = (*fresh62 as libc::c_ulonglong | (1 as libc::c_ulonglong) << j)
+                            as uint64_t;
                     } else {
                         let ref mut fresh63 = (*bf).shoreToExclM;
                         *fresh63 = (*fresh63 as libc::c_ulonglong
@@ -6636,8 +6431,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
                 if !(*bf).biomeToExcl & b != 0 || !(*bf).biomeToExclM & m != 0 {
                     if j < 128 as libc::c_int {
                         let ref mut fresh64 = (*bf).riverToExcl;
-                        *fresh64 = (*fresh64 as libc::c_ulonglong
-                            | (1 as libc::c_ulonglong) << j) as uint64_t;
+                        *fresh64 = (*fresh64 as libc::c_ulonglong | (1 as libc::c_ulonglong) << j)
+                            as uint64_t;
                     } else {
                         let ref mut fresh65 = (*bf).riverToExclM;
                         *fresh65 = (*fresh65 as libc::c_ulonglong
@@ -6676,8 +6471,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
             39 | 38 | 37 | 165 | 167 | 166 => {
                 let ref mut fresh70 = (*bf).tempsToFind;
                 *fresh70 = (*fresh70 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong)
-                        << Warm as libc::c_int + Special as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << Warm as libc::c_int + Special as libc::c_int)
+                    as uint64_t;
                 if id == badlands_plateau as libc::c_int
                     || id == modified_badlands_plateau as libc::c_int
                 {
@@ -6691,16 +6486,16 @@ pub unsafe extern "C" fn setupBiomeFilter(
                 {
                     let ref mut fresh72 = (*bf).majorToFind;
                     *fresh72 = (*fresh72 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong)
-                            << wooded_badlands_plateau as libc::c_int) as uint64_t;
+                        | (1 as libc::c_ulonglong) << wooded_badlands_plateau as libc::c_int)
+                        as uint64_t;
                 }
                 if id < 128 as libc::c_int {
                     let ref mut fresh73 = (*bf).raresToFind;
-                    *fresh73 = (*fresh73 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh73 = (*fresh73 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                     let ref mut fresh74 = (*bf).riverToFind;
-                    *fresh74 = (*fresh74 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh74 = (*fresh74 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                 } else {
                     let ref mut fresh75 = (*bf).raresToFindM;
                     *fresh75 = (*fresh75 as libc::c_ulonglong
@@ -6716,14 +6511,13 @@ pub unsafe extern "C" fn setupBiomeFilter(
             21 | 23 | 22 | 149 | 151 | 168 | 169 => {
                 let ref mut fresh77 = (*bf).tempsToFind;
                 *fresh77 = (*fresh77 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong)
-                        << Lush as libc::c_int + Special as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << Lush as libc::c_int + Special as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh78 = (*bf).majorToFind;
                 *fresh78 = (*fresh78 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << jungle as libc::c_int) as uint64_t;
-                if id == bamboo_jungle as libc::c_int
-                    || id == bamboo_jungle_hills as libc::c_int
-                {
+                    | (1 as libc::c_ulonglong) << jungle as libc::c_int)
+                    as uint64_t;
+                if id == bamboo_jungle as libc::c_int || id == bamboo_jungle_hills as libc::c_int {
                     let ref mut fresh79 = (*bf).edgesToFind;
                     *fresh79 = (*fresh79 as libc::c_ulonglong
                         | (1 as libc::c_ulonglong)
@@ -6756,11 +6550,11 @@ pub unsafe extern "C" fn setupBiomeFilter(
                     }
                     if id < 128 as libc::c_int {
                         let ref mut fresh85 = (*bf).raresToFind;
-                        *fresh85 = (*fresh85 as libc::c_ulonglong
-                            | (1 as libc::c_ulonglong) << id) as uint64_t;
+                        *fresh85 = (*fresh85 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                            as uint64_t;
                         let ref mut fresh86 = (*bf).riverToFind;
-                        *fresh86 = (*fresh86 as libc::c_ulonglong
-                            | (1 as libc::c_ulonglong) << id) as uint64_t;
+                        *fresh86 = (*fresh86 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                            as uint64_t;
                     } else {
                         let ref mut fresh87 = (*bf).raresToFindM;
                         *fresh87 = (*fresh87 as libc::c_ulonglong
@@ -6777,8 +6571,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
             32 | 33 | 160 | 161 => {
                 let ref mut fresh89 = (*bf).tempsToFind;
                 *fresh89 = (*fresh89 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong)
-                        << Cold as libc::c_int + Special as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << Cold as libc::c_int + Special as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh90 = (*bf).majorToFind;
                 *fresh90 = (*fresh90 as libc::c_ulonglong
                     | (1 as libc::c_ulonglong) << giant_tree_taiga as libc::c_int)
@@ -6789,11 +6583,11 @@ pub unsafe extern "C" fn setupBiomeFilter(
                     as uint64_t;
                 if id < 128 as libc::c_int {
                     let ref mut fresh92 = (*bf).raresToFind;
-                    *fresh92 = (*fresh92 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh92 = (*fresh92 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                     let ref mut fresh93 = (*bf).riverToFind;
-                    *fresh93 = (*fresh93 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh93 = (*fresh93 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                 } else {
                     let ref mut fresh94 = (*bf).raresToFindM;
                     *fresh94 = (*fresh94 as libc::c_ulonglong
@@ -6809,15 +6603,17 @@ pub unsafe extern "C" fn setupBiomeFilter(
             35 | 36 | 163 | 164 | 17 | 130 => {
                 let ref mut fresh96 = (*bf).tempsToFind;
                 *fresh96 = (*fresh96 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << Warm as libc::c_int) as uint64_t;
-                if id == desert_hills as libc::c_int || id == desert_lakes as libc::c_int
-                {
+                    | (1 as libc::c_ulonglong) << Warm as libc::c_int)
+                    as uint64_t;
+                if id == desert_hills as libc::c_int || id == desert_lakes as libc::c_int {
                     let ref mut fresh97 = (*bf).majorToFind;
                     *fresh97 = (*fresh97 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << desert as libc::c_int) as uint64_t;
+                        | (1 as libc::c_ulonglong) << desert as libc::c_int)
+                        as uint64_t;
                     let ref mut fresh98 = (*bf).edgesToFind;
                     *fresh98 = (*fresh98 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << desert as libc::c_int) as uint64_t;
+                        | (1 as libc::c_ulonglong) << desert as libc::c_int)
+                        as uint64_t;
                 } else {
                     let ref mut fresh99 = (*bf).majorToFind;
                     *fresh99 = (*fresh99 as libc::c_ulonglong
@@ -6830,11 +6626,11 @@ pub unsafe extern "C" fn setupBiomeFilter(
                 }
                 if id < 128 as libc::c_int {
                     let ref mut fresh101 = (*bf).raresToFind;
-                    *fresh101 = (*fresh101 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh101 = (*fresh101 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                     let ref mut fresh102 = (*bf).riverToFind;
-                    *fresh102 = (*fresh102 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh102 = (*fresh102 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                 } else {
                     let ref mut fresh103 = (*bf).raresToFindM;
                     *fresh103 = (*fresh103 as libc::c_ulonglong
@@ -6850,10 +6646,9 @@ pub unsafe extern "C" fn setupBiomeFilter(
             29 | 157 | 27 | 28 | 155 | 156 | 6 | 134 => {
                 let ref mut fresh105 = (*bf).tempsToFind;
                 *fresh105 = (*fresh105 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << Lush as libc::c_int) as uint64_t;
-                if id == dark_forest as libc::c_int
-                    || id == dark_forest_hills as libc::c_int
-                {
+                    | (1 as libc::c_ulonglong) << Lush as libc::c_int)
+                    as uint64_t;
+                if id == dark_forest as libc::c_int || id == dark_forest_hills as libc::c_int {
                     let ref mut fresh106 = (*bf).majorToFind;
                     *fresh106 = (*fresh106 as libc::c_ulonglong
                         | (1 as libc::c_ulonglong) << dark_forest as libc::c_int)
@@ -6863,10 +6658,10 @@ pub unsafe extern "C" fn setupBiomeFilter(
                         | (1 as libc::c_ulonglong) << dark_forest as libc::c_int)
                         as uint64_t;
                 } else if id == birch_forest as libc::c_int
-                        || id == birch_forest_hills as libc::c_int
-                        || id == tall_birch_forest as libc::c_int
-                        || id == tall_birch_hills as libc::c_int
-                    {
+                    || id == birch_forest_hills as libc::c_int
+                    || id == tall_birch_forest as libc::c_int
+                    || id == tall_birch_hills as libc::c_int
+                {
                     let ref mut fresh108 = (*bf).majorToFind;
                     *fresh108 = (*fresh108 as libc::c_ulonglong
                         | (1 as libc::c_ulonglong) << birch_forest as libc::c_int)
@@ -6875,22 +6670,23 @@ pub unsafe extern "C" fn setupBiomeFilter(
                     *fresh109 = (*fresh109 as libc::c_ulonglong
                         | (1 as libc::c_ulonglong) << birch_forest as libc::c_int)
                         as uint64_t;
-                } else if id == swamp as libc::c_int || id == swamp_hills as libc::c_int
-                    {
+                } else if id == swamp as libc::c_int || id == swamp_hills as libc::c_int {
                     let ref mut fresh110 = (*bf).majorToFind;
                     *fresh110 = (*fresh110 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << swamp as libc::c_int) as uint64_t;
+                        | (1 as libc::c_ulonglong) << swamp as libc::c_int)
+                        as uint64_t;
                     let ref mut fresh111 = (*bf).edgesToFind;
                     *fresh111 = (*fresh111 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << swamp as libc::c_int) as uint64_t;
+                        | (1 as libc::c_ulonglong) << swamp as libc::c_int)
+                        as uint64_t;
                 }
                 if id < 128 as libc::c_int {
                     let ref mut fresh112 = (*bf).raresToFind;
-                    *fresh112 = (*fresh112 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh112 = (*fresh112 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                     let ref mut fresh113 = (*bf).riverToFind;
-                    *fresh113 = (*fresh113 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh113 = (*fresh113 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                 } else {
                     let ref mut fresh114 = (*bf).raresToFindM;
                     *fresh114 = (*fresh114 as libc::c_ulonglong
@@ -6906,7 +6702,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
             30 | 31 | 158 | 12 | 13 | 140 | 11 => {
                 let ref mut fresh116 = (*bf).tempsToFind;
                 *fresh116 = (*fresh116 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << Freezing as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << Freezing as libc::c_int)
+                    as uint64_t;
                 if id == snowy_taiga as libc::c_int
                     || id == snowy_taiga_hills as libc::c_int
                     || id == snowy_taiga_mountains as libc::c_int
@@ -6927,15 +6724,15 @@ pub unsafe extern "C" fn setupBiomeFilter(
                         | (1 as libc::c_ulonglong) << snowy_tundra as libc::c_int)
                         as uint64_t;
                     let ref mut fresh120 = (*bf).riverToFind;
-                    *fresh120 = (*fresh120 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh120 = (*fresh120 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                 } else if id < 128 as libc::c_int {
                     let ref mut fresh121 = (*bf).raresToFind;
-                    *fresh121 = (*fresh121 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh121 = (*fresh121 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                     let ref mut fresh122 = (*bf).riverToFind;
-                    *fresh122 = (*fresh122 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh122 = (*fresh122 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                 } else {
                     let ref mut fresh123 = (*bf).raresToFindM;
                     *fresh123 = (*fresh123 as libc::c_ulonglong
@@ -6951,16 +6748,19 @@ pub unsafe extern "C" fn setupBiomeFilter(
             129 => {
                 let ref mut fresh125 = (*bf).raresToFindM;
                 *fresh125 = (*fresh125 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh126 = (*bf).riverToFindM;
                 *fresh126 = (*fresh126 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
                 current_block_235 = 16988252441985098516;
             }
             26 => {
                 let ref mut fresh127 = (*bf).tempsToFind;
                 *fresh127 = (*fresh127 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << Freezing as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << Freezing as libc::c_int)
+                    as uint64_t;
                 current_block_235 = 14496385620556043821;
             }
             16 | 25 => {
@@ -6969,7 +6769,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
             3 => {
                 let ref mut fresh129 = (*bf).majorToFind;
                 *fresh129 = (*fresh129 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << mountains as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << mountains as libc::c_int)
+                    as uint64_t;
                 current_block_235 = 18266276585208273763;
             }
             34 => {
@@ -6978,7 +6779,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
             131 => {
                 let ref mut fresh132 = (*bf).majorToFind;
                 *fresh132 = (*fresh132 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << mountains as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << mountains as libc::c_int)
+                    as uint64_t;
                 current_block_235 = 15482313706129935342;
             }
             162 => {
@@ -6987,49 +6789,55 @@ pub unsafe extern "C" fn setupBiomeFilter(
             5 | 19 => {
                 let ref mut fresh135 = (*bf).edgesToFind;
                 *fresh135 = (*fresh135 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << taiga as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << taiga as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh136 = (*bf).raresToFind;
-                *fresh136 = (*fresh136 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh136 =
+                    (*fresh136 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
                 let ref mut fresh137 = (*bf).riverToFind;
-                *fresh137 = (*fresh137 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh137 =
+                    (*fresh137 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
                 current_block_235 = 16988252441985098516;
             }
             133 => {
                 let ref mut fresh138 = (*bf).edgesToFind;
                 *fresh138 = (*fresh138 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << taiga as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << taiga as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh139 = (*bf).raresToFindM;
                 *fresh139 = (*fresh139 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh140 = (*bf).riverToFindM;
                 *fresh140 = (*fresh140 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
                 current_block_235 = 16988252441985098516;
             }
             1 | 4 | 18 => {
                 let ref mut fresh141 = (*bf).raresToFind;
-                *fresh141 = (*fresh141 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh141 =
+                    (*fresh141 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
                 let ref mut fresh142 = (*bf).riverToFind;
-                *fresh142 = (*fresh142 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh142 =
+                    (*fresh142 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
                 current_block_235 = 16988252441985098516;
             }
             132 => {
                 let ref mut fresh143 = (*bf).raresToFindM;
                 *fresh143 = (*fresh143 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh144 = (*bf).riverToFindM;
                 *fresh144 = (*fresh144 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
                 current_block_235 = 16988252441985098516;
             }
             2 => {
                 let ref mut fresh145 = (*bf).riverToFind;
-                *fresh145 = (*fresh145 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh145 =
+                    (*fresh145 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
                 current_block_235 = 16988252441985098516;
             }
             _ => {
@@ -7039,15 +6847,14 @@ pub unsafe extern "C" fn setupBiomeFilter(
                         | (1 as libc::c_ulonglong) << Oceanic as libc::c_int)
                         as uint64_t;
                     let ref mut fresh147 = (*bf).oceanToFind;
-                    *fresh147 = (*fresh147 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh147 = (*fresh147 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                     if isShallowOcean(id) != 0 {
-                        if id != lukewarm_ocean as libc::c_int
-                            && id != cold_ocean as libc::c_int
-                        {
+                        if id != lukewarm_ocean as libc::c_int && id != cold_ocean as libc::c_int {
                             let ref mut fresh148 = (*bf).otempToFind;
                             *fresh148 = (*fresh148 as libc::c_ulonglong
-                                | (1 as libc::c_ulonglong) << id) as uint64_t;
+                                | (1 as libc::c_ulonglong) << id)
+                                as uint64_t;
                         }
                     } else {
                         let ref mut fresh149 = (*bf).raresToFind;
@@ -7077,8 +6884,8 @@ pub unsafe extern "C" fn setupBiomeFilter(
                     }
                 } else if id < 64 as libc::c_int {
                     let ref mut fresh154 = (*bf).riverToFind;
-                    *fresh154 = (*fresh154 as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong) << id) as uint64_t;
+                    *fresh154 = (*fresh154 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
+                        as uint64_t;
                 } else {
                     let ref mut fresh155 = (*bf).riverToFindM;
                     *fresh155 = (*fresh155 as libc::c_ulonglong
@@ -7092,35 +6899,38 @@ pub unsafe extern "C" fn setupBiomeFilter(
             15482313706129935342 => {
                 let ref mut fresh133 = (*bf).raresToFindM;
                 *fresh133 = (*fresh133 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh134 = (*bf).riverToFindM;
                 *fresh134 = (*fresh134 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
             }
             18266276585208273763 => {
                 let ref mut fresh130 = (*bf).raresToFind;
-                *fresh130 = (*fresh130 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh130 =
+                    (*fresh130 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
                 let ref mut fresh131 = (*bf).riverToFind;
-                *fresh131 = (*fresh131 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh131 =
+                    (*fresh131 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
             }
             966939755071783605 => {
                 let ref mut fresh67 = (*bf).tempsToFind;
                 *fresh67 = (*fresh67 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << Oceanic as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << Oceanic as libc::c_int)
+                    as uint64_t;
                 let ref mut fresh68 = (*bf).majorToFind;
                 *fresh68 = (*fresh68 as libc::c_ulonglong
                     | (1 as libc::c_ulonglong) << mushroom_fields as libc::c_int)
                     as uint64_t;
                 let ref mut fresh69 = (*bf).riverToFind;
-                *fresh69 = (*fresh69 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh69 =
+                    (*fresh69 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
             }
             14496385620556043821 => {
                 let ref mut fresh128 = (*bf).riverToFind;
-                *fresh128 = (*fresh128 as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id) as uint64_t;
+                *fresh128 =
+                    (*fresh128 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
             }
             _ => {}
         }
@@ -7141,18 +6951,15 @@ pub unsafe extern "C" fn setupBiomeFilter(
             | (1 as libc::c_ulonglong) << frozen_river as libc::c_int)) as uint64_t;
     (*bf).shoreToFindM = (*bf).riverToFindM;
     (*bf).specialCnt = 0 as libc::c_int;
-    (*bf).specialCnt
-        += ((*bf).tempsToFind as libc::c_ulonglong
-            & (1 as libc::c_ulonglong) << Warm as libc::c_int + Special as libc::c_int
-            != 0) as libc::c_int;
-    (*bf).specialCnt
-        += ((*bf).tempsToFind as libc::c_ulonglong
-            & (1 as libc::c_ulonglong) << Lush as libc::c_int + Special as libc::c_int
-            != 0) as libc::c_int;
-    (*bf).specialCnt
-        += ((*bf).tempsToFind as libc::c_ulonglong
-            & (1 as libc::c_ulonglong) << Cold as libc::c_int + Special as libc::c_int
-            != 0) as libc::c_int;
+    (*bf).specialCnt += ((*bf).tempsToFind as libc::c_ulonglong
+        & (1 as libc::c_ulonglong) << Warm as libc::c_int + Special as libc::c_int
+        != 0) as libc::c_int;
+    (*bf).specialCnt += ((*bf).tempsToFind as libc::c_ulonglong
+        & (1 as libc::c_ulonglong) << Lush as libc::c_int + Special as libc::c_int
+        != 0) as libc::c_int;
+    (*bf).specialCnt += ((*bf).tempsToFind as libc::c_ulonglong
+        & (1 as libc::c_ulonglong) << Cold as libc::c_int + Special as libc::c_int
+        != 0) as libc::c_int;
 }
 unsafe extern "C" fn f_graddesc_test(
     mut data: *mut libc::c_void,
@@ -7172,28 +6979,23 @@ unsafe extern "C" fn f_graddesc_test(
     *((*info).ids).offset(idx as isize) = id;
     if id < 128 as libc::c_int {
         let ref mut fresh159 = (*info).b;
-        *fresh159 = (*fresh159 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
-            as uint64_t;
+        *fresh159 = (*fresh159 as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
     } else {
         let ref mut fresh160 = (*info).m;
         *fresh160 = (*fresh160 as libc::c_ulonglong
             | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
     }
-    let mut match_exc: libc::c_int = ((*info).bexc | (*info).mexc
-        == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
-    let mut match_any: libc::c_int = ((*info).bany | (*info).many
-        == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
-    let mut match_req: libc::c_int = ((*info).breq | (*info).mreq
-        == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
-    match_exc
-        |= (((*info).b & (*info).bexc != 0 || (*info).m & (*info).mexc != 0)
-            as libc::c_int == 0 as libc::c_int) as libc::c_int;
-    match_any
-        |= ((*info).b & (*info).bany != 0 || (*info).m & (*info).many != 0)
-            as libc::c_int;
-    match_req
-        |= ((*info).b & (*info).breq == (*info).breq
-            && (*info).m & (*info).mreq == (*info).mreq) as libc::c_int;
+    let mut match_exc: libc::c_int =
+        ((*info).bexc | (*info).mexc == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
+    let mut match_any: libc::c_int =
+        ((*info).bany | (*info).many == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
+    let mut match_req: libc::c_int =
+        ((*info).breq | (*info).mreq == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
+    match_exc |= (((*info).b & (*info).bexc != 0 || (*info).m & (*info).mexc != 0) as libc::c_int
+        == 0 as libc::c_int) as libc::c_int;
+    match_any |= ((*info).b & (*info).bany != 0 || (*info).m & (*info).many != 0) as libc::c_int;
+    match_req |= ((*info).b & (*info).breq == (*info).breq
+        && (*info).m & (*info).mreq == (*info).mreq) as libc::c_int;
     if match_exc != 0 && match_any != 0 && match_req != 0 {
         return 1 as libc::c_int;
     }
@@ -7235,10 +7037,7 @@ pub unsafe extern "C" fn checkForBiomes(
             while i < r.sy {
                 j = 0 as libc::c_int;
                 while j < r.sx * r.sz {
-                    *cache
-                        .offset(
-                            (i * r.sx * r.sz + j) as isize,
-                        ) = *cache.offset(j as isize);
+                    *cache.offset((i * r.sx * r.sz + j) as isize) = *cache.offset(j as isize);
                     j += 1;
                 }
                 i += 1;
@@ -7372,7 +7171,8 @@ pub unsafe extern "C" fn checkForBiomes(
                 err != 0;
             }
         }
-        if err != 0 || !stop.is_null() && *stop as libc::c_int != 0
+        if err != 0
+            || !stop.is_null() && *stop as libc::c_int != 0
             || (*filter).flags & CFB_APPROX as libc::c_int as libc::c_uint != 0
         {
             current_block = 544707285801045047;
@@ -7385,8 +7185,7 @@ pub unsafe extern "C" fn checkForBiomes(
     match current_block {
         6717214610478484138 => {
             buf = malloc(
-                (n as libc::c_ulong)
-                    .wrapping_mul(::std::mem::size_of::<touple>() as libc::c_ulong),
+                (n as libc::c_ulong).wrapping_mul(::std::mem::size_of::<touple>() as libc::c_ulong),
             ) as *mut touple;
             id = 0 as libc::c_int;
             k = 0 as libc::c_int;
@@ -7407,38 +7206,40 @@ pub unsafe extern "C" fn checkForBiomes(
                 k += 1;
             }
             if (*filter).flags & CFB_APPROX as libc::c_int as libc::c_uint != 0 {
-                let mut t: libc::c_int = 400 as libc::c_int
-                    + sqrt(n as libc::c_double) as libc::c_int;
+                let mut t: libc::c_int =
+                    400 as libc::c_int + sqrt(n as libc::c_double) as libc::c_int;
                 if trials > t {
                     trials = t;
                 }
             }
             i = 0 as libc::c_int;
             while i < trials {
-                let mut t_0: touple = touple { i: 0, x: 0, y: 0, z: 0 };
+                let mut t_0: touple = touple {
+                    i: 0,
+                    x: 0,
+                    y: 0,
+                    z: 0,
+                };
                 j = n - i;
                 k = rand() % j;
                 t_0 = *buf.offset(k as isize);
                 if k != j - 1 as libc::c_int {
-                    *buf
-                        .offset(
-                            k as isize,
-                        ) = *buf.offset((j - 1 as libc::c_int) as isize);
+                    *buf.offset(k as isize) = *buf.offset((j - 1 as libc::c_int) as isize);
                     *buf.offset((j - 1 as libc::c_int) as isize) = t_0;
                 }
                 if !stop.is_null() && *stop as libc::c_int != 0 {
                     break;
                 }
                 if !(t_0.y == 0 as libc::c_int
-                    && *((*info.as_mut_ptr()).ids).offset(t_0.i as isize)
-                        != -(1 as libc::c_int))
+                    && *((*info.as_mut_ptr()).ids).offset(t_0.i as isize) != -(1 as libc::c_int))
                 {
                     id = getBiomeAt(g, r.scale, r.x + t_0.x, r.y + t_0.y, r.z + t_0.z);
                     *((*info.as_mut_ptr()).ids).offset(t_0.i as isize) = id;
                     if id < 128 as libc::c_int {
                         let ref mut fresh165 = (*info.as_mut_ptr()).b;
                         *fresh165 = (*fresh165 as libc::c_ulonglong
-                            | (1 as libc::c_ulonglong) << id) as uint64_t;
+                            | (1 as libc::c_ulonglong) << id)
+                            as uint64_t;
                     } else {
                         let ref mut fresh166 = (*info.as_mut_ptr()).m;
                         *fresh166 = (*fresh166 as libc::c_ulonglong
@@ -7446,27 +7247,29 @@ pub unsafe extern "C" fn checkForBiomes(
                             as uint64_t;
                     }
                     let mut match_exc: libc::c_int = ((*info.as_mut_ptr()).bexc
-                        | (*info.as_mut_ptr()).mexc == 0 as libc::c_int as libc::c_ulong)
+                        | (*info.as_mut_ptr()).mexc
+                        == 0 as libc::c_int as libc::c_ulong)
                         as libc::c_int;
                     let mut match_any: libc::c_int = ((*info.as_mut_ptr()).bany
-                        | (*info.as_mut_ptr()).many == 0 as libc::c_int as libc::c_ulong)
+                        | (*info.as_mut_ptr()).many
+                        == 0 as libc::c_int as libc::c_ulong)
                         as libc::c_int;
                     let mut match_req: libc::c_int = ((*info.as_mut_ptr()).breq
-                        | (*info.as_mut_ptr()).mreq == 0 as libc::c_int as libc::c_ulong)
+                        | (*info.as_mut_ptr()).mreq
+                        == 0 as libc::c_int as libc::c_ulong)
                         as libc::c_int;
-                    match_exc
-                        |= (((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).bexc != 0
-                            || (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).mexc != 0)
-                            as libc::c_int == 0 as libc::c_int) as libc::c_int;
-                    match_any
-                        |= ((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).bany != 0
-                            || (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).many != 0)
-                            as libc::c_int;
-                    match_req
-                        |= ((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).breq
-                            == (*info.as_mut_ptr()).breq
-                            && (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).mreq
-                                == (*info.as_mut_ptr()).mreq) as libc::c_int;
+                    match_exc |= (((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).bexc != 0
+                        || (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).mexc != 0)
+                        as libc::c_int
+                        == 0 as libc::c_int) as libc::c_int;
+                    match_any |= ((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).bany != 0
+                        || (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).many != 0)
+                        as libc::c_int;
+                    match_req |= ((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).breq
+                        == (*info.as_mut_ptr()).breq
+                        && (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).mreq
+                            == (*info.as_mut_ptr()).mreq)
+                        as libc::c_int;
                     if match_exc != 0 && match_any != 0 && match_req != 0 {
                         break;
                     }
@@ -7479,28 +7282,26 @@ pub unsafe extern "C" fn checkForBiomes(
     if !stop.is_null() && *stop as libc::c_int != 0 {
         ret = 0 as libc::c_int;
     } else {
-        let mut match_exc_0: libc::c_int = ((*info.as_mut_ptr()).bexc
-            | (*info.as_mut_ptr()).mexc == 0 as libc::c_int as libc::c_ulong)
+        let mut match_exc_0: libc::c_int = ((*info.as_mut_ptr()).bexc | (*info.as_mut_ptr()).mexc
+            == 0 as libc::c_int as libc::c_ulong)
             as libc::c_int;
-        let mut match_any_0: libc::c_int = ((*info.as_mut_ptr()).bany
-            | (*info.as_mut_ptr()).many == 0 as libc::c_int as libc::c_ulong)
+        let mut match_any_0: libc::c_int = ((*info.as_mut_ptr()).bany | (*info.as_mut_ptr()).many
+            == 0 as libc::c_int as libc::c_ulong)
             as libc::c_int;
-        let mut match_req_0: libc::c_int = ((*info.as_mut_ptr()).breq
-            | (*info.as_mut_ptr()).mreq == 0 as libc::c_int as libc::c_ulong)
+        let mut match_req_0: libc::c_int = ((*info.as_mut_ptr()).breq | (*info.as_mut_ptr()).mreq
+            == 0 as libc::c_int as libc::c_ulong)
             as libc::c_int;
-        match_exc_0
-            |= (((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).bexc != 0
-                || (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).mexc != 0)
-                as libc::c_int == 0 as libc::c_int) as libc::c_int;
-        match_any_0
-            |= ((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).bany != 0
-                || (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).many != 0)
-                as libc::c_int;
-        match_req_0
-            |= ((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).breq
-                == (*info.as_mut_ptr()).breq
-                && (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).mreq
-                    == (*info.as_mut_ptr()).mreq) as libc::c_int;
+        match_exc_0 |= (((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).bexc != 0
+            || (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).mexc != 0)
+            as libc::c_int
+            == 0 as libc::c_int) as libc::c_int;
+        match_any_0 |= ((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).bany != 0
+            || (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).many != 0)
+            as libc::c_int;
+        match_req_0 |= ((*info.as_mut_ptr()).b & (*info.as_mut_ptr()).breq
+            == (*info.as_mut_ptr()).breq
+            && (*info.as_mut_ptr()).m & (*info.as_mut_ptr()).mreq == (*info.as_mut_ptr()).mreq)
+            as libc::c_int;
         ret = (match_exc_0 != 0 && match_any_0 != 0 && match_req_0 != 0) as libc::c_int;
     }
     if !buf.is_null() {
@@ -7543,8 +7344,7 @@ unsafe extern "C" fn mapFilterSpecial(
             return M_STOP as libc::c_int;
         }
     }
-    let mut err: libc::c_int = ((*f).map)
-        .expect("non-null function pointer")(l, out, x, z, w, h);
+    let mut err: libc::c_int = ((*f).map).expect("non-null function pointer")(l, out, x, z, w, h);
     if (err != 0 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return err;
     }
@@ -7561,8 +7361,7 @@ unsafe extern "C" fn mapFilterSpecial(
                     | (1 as libc::c_ulonglong) << id + Special as libc::c_int)
                     as uint64_t;
             } else {
-                temps = (temps as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
-                    as uint64_t;
+                temps = (temps as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
             }
             i += 1;
         }
@@ -7595,7 +7394,8 @@ unsafe extern "C" fn mapFilterMushroom(
     let mut err: libc::c_int = 0;
     if w * h < 100 as libc::c_int
         && (*(*f).bf).majorToFind as libc::c_ulonglong
-            & (1 as libc::c_ulonglong) << mushroom_fields as libc::c_int != 0
+            & (1 as libc::c_ulonglong) << mushroom_fields as libc::c_int
+            != 0
     {
         let mut ss: uint64_t = (*l).startSeed;
         let mut cs: uint64_t = 0;
@@ -7626,7 +7426,8 @@ unsafe extern "C" fn mapFilterMushroom(
         return err;
     }
     if (*(*f).bf).majorToFind as libc::c_ulonglong
-        & (1 as libc::c_ulonglong) << mushroom_fields as libc::c_int != 0
+        & (1 as libc::c_ulonglong) << mushroom_fields as libc::c_int
+        != 0
     {
         i = 0 as libc::c_int;
         while i < w * h {
@@ -7651,8 +7452,7 @@ unsafe extern "C" fn mapFilterBiome(
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut b: uint64_t = 0;
-    let mut err: libc::c_int = ((*f).map)
-        .expect("non-null function pointer")(l, out, x, z, w, h);
+    let mut err: libc::c_int = ((*f).map).expect("non-null function pointer")(l, out, x, z, w, h);
     if (err != 0 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return err;
     }
@@ -7689,8 +7489,7 @@ unsafe extern "C" fn mapFilterOceanTemp(
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut b: uint64_t = 0;
-    let mut err: libc::c_int = ((*f).map)
-        .expect("non-null function pointer")(l, out, x, z, w, h);
+    let mut err: libc::c_int = ((*f).map).expect("non-null function pointer")(l, out, x, z, w, h);
     if (err != 0 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return err;
     }
@@ -7730,13 +7529,12 @@ unsafe extern "C" fn mapFilterBiomeEdge(
     i = 0 as libc::c_int;
     while i < w * h {
         b = (b as libc::c_ulonglong
-            | (1 as libc::c_ulonglong)
-                << (*out.offset(i as isize) & 0x3f as libc::c_int)) as uint64_t;
+            | (1 as libc::c_ulonglong) << (*out.offset(i as isize) & 0x3f as libc::c_int))
+            as uint64_t;
         i += 1;
     }
     if (*(*f).bf).edgesToExcl != 0 && (*(*f).bf).edgesToFind == 0 {
-        if 0 as libc::c_int != 0
-            && b & (*(*f).bf).edgesToExcl == 0 as libc::c_int as libc::c_ulong
+        if 0 as libc::c_int != 0 && b & (*(*f).bf).edgesToExcl == 0 as libc::c_int as libc::c_ulong
         {
             return M_STOP as libc::c_int;
         }
@@ -7771,8 +7569,8 @@ unsafe extern "C" fn mapFilterRareBiome(
         if id < 128 as libc::c_int {
             b = (b as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
         } else {
-            bm = (bm as libc::c_ulonglong
-                | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+            bm = (bm as libc::c_ulonglong | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                as uint64_t;
         }
         i += 1;
     }
@@ -7806,8 +7604,7 @@ unsafe extern "C" fn mapFilterShore(
     let mut b: uint64_t = 0;
     let mut bm: uint64_t = 0;
     let mut i: libc::c_int = 0;
-    let mut err: libc::c_int = ((*f).map)
-        .expect("non-null function pointer")(l, out, x, z, w, h);
+    let mut err: libc::c_int = ((*f).map).expect("non-null function pointer")(l, out, x, z, w, h);
     if (err != 0 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return err;
     }
@@ -7819,8 +7616,8 @@ unsafe extern "C" fn mapFilterShore(
         if id < 128 as libc::c_int {
             b = (b as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
         } else {
-            bm = (bm as libc::c_ulonglong
-                | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+            bm = (bm as libc::c_ulonglong | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                as uint64_t;
         }
         i += 1;
     }
@@ -7854,8 +7651,7 @@ unsafe extern "C" fn mapFilterRiverMix(
     let mut b: uint64_t = 0;
     let mut bm: uint64_t = 0;
     let mut i: libc::c_int = 0;
-    let mut err: libc::c_int = ((*f).map)
-        .expect("non-null function pointer")(l, out, x, z, w, h);
+    let mut err: libc::c_int = ((*f).map).expect("non-null function pointer")(l, out, x, z, w, h);
     if (err != 0 as libc::c_int) as libc::c_int as libc::c_long != 0 {
         return err;
     }
@@ -7867,8 +7663,8 @@ unsafe extern "C" fn mapFilterRiverMix(
         if id < 128 as libc::c_int {
             b = (b as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
         } else {
-            bm = (bm as libc::c_ulonglong
-                | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+            bm = (bm as libc::c_ulonglong | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                as uint64_t;
         }
         i += 1;
     }
@@ -7903,8 +7699,7 @@ unsafe extern "C" fn mapFilterOceanMix(
     let mut i: libc::c_int = 0;
     let mut err: libc::c_int = 0;
     if (*(*f).bf).riverToFind != 0 {
-        err = ((*(*l).p).getMap)
-            .expect("non-null function pointer")((*l).p, out, x, z, w, h);
+        err = ((*(*l).p).getMap).expect("non-null function pointer")((*l).p, out, x, z, w, h);
         if err != 0 {
             return err;
         }
@@ -7931,7 +7726,7 @@ unsafe extern "C" fn swapMap(
     mut fd: *mut filter_data_t,
     mut bf: *const BiomeFilter,
     mut l: *mut Layer,
-    mut map: Option::<
+    mut map: Option<
         unsafe extern "C" fn(
             *const Layer,
             *mut libc::c_int,
@@ -7977,10 +7772,8 @@ pub unsafe extern "C" fn checkForBiomesAtLayer(
         let mut j: libc::c_int = 0;
         let mut bx: libc::c_int = x * (*l).scale;
         let mut bz: libc::c_int = z * (*l).scale;
-        let mut bw: libc::c_int = w.wrapping_mul((*l).scale as libc::c_uint)
-            as libc::c_int;
-        let mut bh: libc::c_int = h.wrapping_mul((*l).scale as libc::c_uint)
-            as libc::c_int;
+        let mut bw: libc::c_int = w.wrapping_mul((*l).scale as libc::c_uint) as libc::c_int;
+        let mut bh: libc::c_int = h.wrapping_mul((*l).scale as libc::c_uint) as libc::c_int;
         let mut x0: libc::c_int = 0;
         let mut z0: libc::c_int = 0;
         let mut x1: libc::c_int = 0;
@@ -8027,8 +7820,9 @@ pub unsafe extern "C" fn checkForBiomesAtLayer(
                 return 0 as libc::c_int;
             }
         }
-        l = &mut *((*g).layers).as_mut_ptr().offset(L_BIOME_256 as libc::c_int as isize)
-            as *mut Layer;
+        l = &mut *((*g).layers)
+            .as_mut_ptr()
+            .offset(L_BIOME_256 as libc::c_int as isize) as *mut Layer;
         x0 = bx / (*l).scale;
         if x < 0 as libc::c_int {
             x0 -= 1;
@@ -8046,7 +7840,8 @@ pub unsafe extern "C" fn checkForBiomesAtLayer(
             z1 += 1;
         }
         if (*filter).majorToFind as libc::c_ulonglong
-            & (1 as libc::c_ulonglong) << mushroom_fields as libc::c_int != 0
+            & (1 as libc::c_ulonglong) << mushroom_fields as libc::c_int
+            != 0
         {
             ss = getStartSeed(
                 seed,
@@ -8101,8 +7896,8 @@ pub unsafe extern "C" fn checkForBiomesAtLayer(
                         as uint64_t;
                 } else {
                     potential = (potential as libc::c_ulonglong
-                        | (1 as libc::c_ulonglong)
-                            << wooded_badlands_plateau as libc::c_int) as uint64_t;
+                        | (1 as libc::c_ulonglong) << wooded_badlands_plateau as libc::c_int)
+                        as uint64_t;
                 }
                 match cs6 {
                     0 => {
@@ -8319,10 +8114,14 @@ pub unsafe extern "C" fn checkForBiomesAtLayer(
         ),
     );
     setLayerSeed(entry, seed);
-    let mut err: libc::c_int = ((*entry).getMap)
-        .expect(
-            "non-null function pointer",
-        )(entry, ids, x, z, w as libc::c_int, h as libc::c_int);
+    let mut err: libc::c_int = ((*entry).getMap).expect("non-null function pointer")(
+        entry,
+        ids,
+        x,
+        z,
+        w as libc::c_int,
+        h as libc::c_int,
+    );
     let mut ret: libc::c_int = 0 as libc::c_int;
     if err == 0 as libc::c_int {
         let mut b: uint64_t = 0 as libc::c_int as uint64_t;
@@ -8332,29 +8131,29 @@ pub unsafe extern "C" fn checkForBiomesAtLayer(
         while i_0 < w.wrapping_mul(h) {
             let mut id: libc::c_int = *ids.offset(i_0 as isize);
             if id < 128 as libc::c_int {
-                b = (b as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
-                    as uint64_t;
+                b = (b as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
             } else {
-                m = (m as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                m = (m as libc::c_ulonglong | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
             }
             i_0 = i_0.wrapping_add(1);
         }
         let mut match_exc: libc::c_int = ((*filter).biomeToExcl | (*filter).biomeToExclM
-            == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
+            == 0 as libc::c_int as libc::c_ulong)
+            as libc::c_int;
         let mut match_any: libc::c_int = ((*filter).biomeToPick | (*filter).biomeToPickM
-            == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
+            == 0 as libc::c_int as libc::c_ulong)
+            as libc::c_int;
         let mut match_req: libc::c_int = ((*filter).biomeToFind | (*filter).biomeToFindM
-            == 0 as libc::c_int as libc::c_ulong) as libc::c_int;
-        match_exc
-            |= !(b & (*filter).biomeToExcl != 0 || m & (*filter).biomeToExclM != 0)
-                as libc::c_int;
-        match_any
-            |= (b & (*filter).biomeToPick != 0 || m & (*filter).biomeToPickM != 0)
-                as libc::c_int;
-        match_req
-            |= (b & (*filter).biomeToFind == (*filter).biomeToFind
-                && m & (*filter).biomeToFindM == (*filter).biomeToFindM) as libc::c_int;
+            == 0 as libc::c_int as libc::c_ulong)
+            as libc::c_int;
+        match_exc |=
+            !(b & (*filter).biomeToExcl != 0 || m & (*filter).biomeToExclM != 0) as libc::c_int;
+        match_any |=
+            (b & (*filter).biomeToPick != 0 || m & (*filter).biomeToPickM != 0) as libc::c_int;
+        match_req |= (b & (*filter).biomeToFind == (*filter).biomeToFind
+            && m & (*filter).biomeToFindM == (*filter).biomeToFindM)
+            as libc::c_int;
         if match_exc != 0 && match_any != 0 && match_req != 0 {
             ret = 1 as libc::c_int;
         }
@@ -8419,19 +8218,13 @@ pub unsafe extern "C" fn checkForTemps(
     let mut i: libc::c_int = 0;
     let mut j: libc::c_int = 0;
     let mut scnt: libc::c_int = 0 as libc::c_int;
-    if *tc.offset((Special as libc::c_int + Warm as libc::c_int) as isize)
-        > 0 as libc::c_int
-    {
+    if *tc.offset((Special as libc::c_int + Warm as libc::c_int) as isize) > 0 as libc::c_int {
         scnt += *tc.offset((Special as libc::c_int + Warm as libc::c_int) as isize);
     }
-    if *tc.offset((Special as libc::c_int + Lush as libc::c_int) as isize)
-        > 0 as libc::c_int
-    {
+    if *tc.offset((Special as libc::c_int + Lush as libc::c_int) as isize) > 0 as libc::c_int {
         scnt += *tc.offset((Special as libc::c_int + Lush as libc::c_int) as isize);
     }
-    if *tc.offset((Special as libc::c_int + Cold as libc::c_int) as isize)
-        > 0 as libc::c_int
-    {
+    if *tc.offset((Special as libc::c_int + Cold as libc::c_int) as isize) > 0 as libc::c_int {
         scnt += *tc.offset((Special as libc::c_int + Cold as libc::c_int) as isize);
     }
     if scnt > 0 as libc::c_int {
@@ -8439,8 +8232,7 @@ pub unsafe extern "C" fn checkForTemps(
         while j < h {
             i = 0 as libc::c_int;
             while i < w {
-                if mcFirstIsZero(getChunkSeed(ss, x + i, z + j), 13 as libc::c_int) != 0
-                {
+                if mcFirstIsZero(getChunkSeed(ss, x + i, z + j), 13 as libc::c_int) != 0 {
                     scnt -= 1;
                 }
                 i += 1;
@@ -8499,18 +8291,14 @@ pub unsafe extern "C" fn canBiomeGenerate(
             return 0 as libc::c_int;
         }
     }
-    if dofilter != 0
-        || layerId == L_BAMBOO_256 as libc::c_int && mc >= MC_1_14 as libc::c_int
-    {
+    if dofilter != 0 || layerId == L_BAMBOO_256 as libc::c_int && mc >= MC_1_14 as libc::c_int {
         dofilter = 1 as libc::c_int;
         match id {
             23 | 34 | 37 => return 0 as libc::c_int,
             _ => {}
         }
     }
-    if dofilter != 0
-        || layerId == L_BIOME_EDGE_64 as libc::c_int && mc >= MC_1_7 as libc::c_int
-    {
+    if dofilter != 0 || layerId == L_BIOME_EDGE_64 as libc::c_int && mc >= MC_1_7 as libc::c_int {
         dofilter = 1 as libc::c_int;
         if id >= 64 as libc::c_int && id != bamboo_jungle as libc::c_int {
             return 0 as libc::c_int;
@@ -8523,9 +8311,7 @@ pub unsafe extern "C" fn canBiomeGenerate(
     if dofilter != 0 || layerId == L_HILLS_64 as libc::c_int {
         dofilter = 1 as libc::c_int;
     }
-    if dofilter != 0
-        || layerId == L_SUNFLOWER_64 as libc::c_int && mc >= MC_1_7 as libc::c_int
-    {
+    if dofilter != 0 || layerId == L_SUNFLOWER_64 as libc::c_int && mc >= MC_1_7 as libc::c_int {
         dofilter = 1 as libc::c_int;
         match id {
             10 | 15 | 16 | 25 | 26 => return 0 as libc::c_int,
@@ -8547,15 +8333,13 @@ pub unsafe extern "C" fn canBiomeGenerate(
             return 0 as libc::c_int;
         }
     }
-    if dofilter != 0
-        || layerId == L_OCEAN_MIX_4 as libc::c_int && mc >= MC_1_13 as libc::c_int
-    {
+    if dofilter != 0 || layerId == L_OCEAN_MIX_4 as libc::c_int && mc >= MC_1_13 as libc::c_int {
         dofilter = 1 as libc::c_int;
     }
     if dofilter == 0 && layerId != L_VORONOI_1 as libc::c_int {
         printf(
-            b"canBiomeGenerate(): unsupported layer (%d) or version (%d)\n\0"
-                as *const u8 as *const libc::c_char,
+            b"canBiomeGenerate(): unsupported layer (%d) or version (%d)\n\0" as *const u8
+                as *const libc::c_char,
             layerId,
             mc,
         );
@@ -8577,12 +8361,10 @@ pub unsafe extern "C" fn getAvailableBiomes(
         i = 0 as libc::c_int;
         while i < 64 as libc::c_int {
             if isOverworld(mc, i) != 0 {
-                *mL = (*mL as libc::c_ulonglong | (1 as libc::c_ulonglong) << i)
-                    as uint64_t;
+                *mL = (*mL as libc::c_ulonglong | (1 as libc::c_ulonglong) << i) as uint64_t;
             }
             if isOverworld(mc, i + 128 as libc::c_int) != 0 {
-                *mM = (*mM as libc::c_ulonglong | (1 as libc::c_ulonglong) << i)
-                    as uint64_t;
+                *mM = (*mM as libc::c_ulonglong | (1 as libc::c_ulonglong) << i) as uint64_t;
             }
             i += 1;
         }
@@ -8590,12 +8372,10 @@ pub unsafe extern "C" fn getAvailableBiomes(
         i = 0 as libc::c_int;
         while i < 64 as libc::c_int {
             if canBiomeGenerate(layerId, mc, i) != 0 {
-                *mL = (*mL as libc::c_ulonglong | (1 as libc::c_ulonglong) << i)
-                    as uint64_t;
+                *mL = (*mL as libc::c_ulonglong | (1 as libc::c_ulonglong) << i) as uint64_t;
             }
             if canBiomeGenerate(layerId, mc, i + 128 as libc::c_int) != 0 {
-                *mM = (*mM as libc::c_ulonglong | (1 as libc::c_ulonglong) << i)
-                    as uint64_t;
+                *mM = (*mM as libc::c_ulonglong | (1 as libc::c_ulonglong) << i) as uint64_t;
             }
             i += 1;
         }
@@ -8654,8 +8434,7 @@ pub unsafe extern "C" fn genPotential(
                 {
                     genPotential(mL, mM, L_DEEP_OCEAN_256 as libc::c_int, mc, id);
                 }
-            } else if id == ocean as libc::c_int || id == mushroom_fields as libc::c_int
-                {
+            } else if id == ocean as libc::c_int || id == mushroom_fields as libc::c_int {
                 genPotential(mL, mM, L_BIOME_256 as libc::c_int, mc, id);
             } else {
                 genPotential(
@@ -8679,13 +8458,7 @@ pub unsafe extern "C" fn genPotential(
                     mc,
                     mountains as libc::c_int,
                 );
-                genPotential(
-                    mL,
-                    mM,
-                    L_BIOME_256 as libc::c_int,
-                    mc,
-                    swamp as libc::c_int,
-                );
+                genPotential(mL, mM, L_BIOME_256 as libc::c_int, mc, swamp as libc::c_int);
                 genPotential(
                     mL,
                     mM,
@@ -8693,13 +8466,7 @@ pub unsafe extern "C" fn genPotential(
                     mc,
                     plains as libc::c_int,
                 );
-                genPotential(
-                    mL,
-                    mM,
-                    L_BIOME_256 as libc::c_int,
-                    mc,
-                    taiga as libc::c_int,
-                );
+                genPotential(mL, mM, L_BIOME_256 as libc::c_int, mc, taiga as libc::c_int);
                 if mc >= MC_1_2 as libc::c_int {
                     genPotential(
                         mL,
@@ -8966,16 +8733,11 @@ pub unsafe extern "C" fn genPotential(
                         mc,
                         mountain_edge as libc::c_int,
                     );
-                } else if id != ocean as libc::c_int && id != river as libc::c_int
-                        && id != swamp as libc::c_int
-                    {
-                    genPotential(
-                        mL,
-                        mM,
-                        L_SHORE_16 as libc::c_int,
-                        mc,
-                        beach as libc::c_int,
-                    );
+                } else if id != ocean as libc::c_int
+                    && id != river as libc::c_int
+                    && id != swamp as libc::c_int
+                {
+                    genPotential(mL, mM, L_SHORE_16 as libc::c_int, mc, beach as libc::c_int);
                 }
                 genPotential(mL, mM, L_SHORE_16 as libc::c_int, mc, id);
             } else {
@@ -9005,13 +8767,7 @@ pub unsafe extern "C" fn genPotential(
                         mushroom_field_shore as libc::c_int,
                     );
                 } else if getCategory(mc, id) == jungle as libc::c_int {
-                    genPotential(
-                        mL,
-                        mM,
-                        L_SHORE_16 as libc::c_int,
-                        mc,
-                        beach as libc::c_int,
-                    );
+                    genPotential(mL, mM, L_SHORE_16 as libc::c_int, mc, beach as libc::c_int);
                     genPotential(
                         mL,
                         mM,
@@ -9020,9 +8776,9 @@ pub unsafe extern "C" fn genPotential(
                         jungle_edge as libc::c_int,
                     );
                 } else if id == mountains as libc::c_int
-                        || id == wooded_mountains as libc::c_int
-                        || id == mountain_edge as libc::c_int
-                    {
+                    || id == wooded_mountains as libc::c_int
+                    || id == mountain_edge as libc::c_int
+                {
                     genPotential(
                         mL,
                         mM,
@@ -9039,25 +8795,15 @@ pub unsafe extern "C" fn genPotential(
                         snowy_beach as libc::c_int,
                     );
                 } else if id == badlands as libc::c_int
-                        || id == wooded_badlands_plateau as libc::c_int
-                    {
-                    genPotential(
-                        mL,
-                        mM,
-                        L_SHORE_16 as libc::c_int,
-                        mc,
-                        desert as libc::c_int,
-                    );
-                } else if id != ocean as libc::c_int && id != deep_ocean as libc::c_int
-                        && id != river as libc::c_int && id != swamp as libc::c_int
-                    {
-                    genPotential(
-                        mL,
-                        mM,
-                        L_SHORE_16 as libc::c_int,
-                        mc,
-                        beach as libc::c_int,
-                    );
+                    || id == wooded_badlands_plateau as libc::c_int
+                {
+                    genPotential(mL, mM, L_SHORE_16 as libc::c_int, mc, desert as libc::c_int);
+                } else if id != ocean as libc::c_int
+                    && id != deep_ocean as libc::c_int
+                    && id != river as libc::c_int
+                    && id != swamp as libc::c_int
+                {
+                    genPotential(mL, mM, L_SHORE_16 as libc::c_int, mc, beach as libc::c_int);
                 }
                 genPotential(mL, mM, L_SHORE_16 as libc::c_int, mc, id);
                 current_block = 2167674248514145403;
@@ -9073,8 +8819,8 @@ pub unsafe extern "C" fn genPotential(
                     frozen_river as libc::c_int,
                 );
             } else if id == mushroom_fields as libc::c_int
-                    || id == mushroom_field_shore as libc::c_int
-                {
+                || id == mushroom_field_shore as libc::c_int
+            {
                 genPotential(
                     mL,
                     mM,
@@ -9083,8 +8829,8 @@ pub unsafe extern "C" fn genPotential(
                     mushroom_field_shore as libc::c_int,
                 );
             } else if id != ocean as libc::c_int
-                    && (mc < MC_1_7 as libc::c_int || isOceanic(id) == 0)
-                {
+                && (mc < MC_1_7 as libc::c_int || isOceanic(id) == 0)
+            {
                 genPotential(
                     mL,
                     mM,
@@ -9099,13 +8845,7 @@ pub unsafe extern "C" fn genPotential(
         45 => {
             if mc >= MC_1_13 as libc::c_int && isOceanic(id) != 0 {
                 if id == ocean as libc::c_int {
-                    genPotential(
-                        mL,
-                        mM,
-                        L_VORONOI_1 as libc::c_int,
-                        mc,
-                        ocean as libc::c_int,
-                    );
+                    genPotential(mL, mM, L_VORONOI_1 as libc::c_int, mc, ocean as libc::c_int);
                     genPotential(
                         mL,
                         mM,
@@ -9204,13 +8944,7 @@ pub unsafe extern "C" fn genPotential(
                 current_block = 2900234161786722821;
             } else {
                 if isShallowOcean(id) == 0 && getMutated(mc, id) > 0 as libc::c_int {
-                    genPotential(
-                        mL,
-                        mM,
-                        L_HILLS_64 as libc::c_int,
-                        mc,
-                        getMutated(mc, id),
-                    );
+                    genPotential(mL, mM, L_HILLS_64 as libc::c_int, mc, getMutated(mc, id));
                 }
                 match id {
                     2 => {
@@ -9248,13 +8982,7 @@ pub unsafe extern "C" fn genPotential(
                         );
                     }
                     29 => {
-                        genPotential(
-                            mL,
-                            mM,
-                            L_HILLS_64 as libc::c_int,
-                            mc,
-                            plains as libc::c_int,
-                        );
+                        genPotential(mL, mM, L_HILLS_64 as libc::c_int, mc, plains as libc::c_int);
                         genPotential(
                             mL,
                             mM,
@@ -9307,13 +9035,7 @@ pub unsafe extern "C" fn genPotential(
                                 wooded_hills as libc::c_int,
                             );
                         }
-                        genPotential(
-                            mL,
-                            mM,
-                            L_HILLS_64 as libc::c_int,
-                            mc,
-                            forest as libc::c_int,
-                        );
+                        genPotential(mL, mM, L_HILLS_64 as libc::c_int, mc, forest as libc::c_int);
                         genPotential(
                             mL,
                             mM,
@@ -9395,9 +9117,7 @@ pub unsafe extern "C" fn genPotential(
                         );
                     }
                     _ => {
-                        if areSimilar(mc, id, wooded_badlands_plateau as libc::c_int)
-                            != 0
-                        {
+                        if areSimilar(mc, id, wooded_badlands_plateau as libc::c_int) != 0 {
                             genPotential(
                                 mL,
                                 mM,
@@ -9450,11 +9170,11 @@ pub unsafe extern "C" fn genPotential(
         }
         1916527840833100240 => {
             if id < 128 as libc::c_int {
-                *mL = (*mL as libc::c_ulonglong | (1 as libc::c_ulonglong) << id)
-                    as uint64_t;
+                *mL = (*mL as libc::c_ulonglong | (1 as libc::c_ulonglong) << id) as uint64_t;
             } else {
                 *mM = (*mM as libc::c_ulonglong
-                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int) as uint64_t;
+                    | (1 as libc::c_ulonglong) << id - 128 as libc::c_int)
+                    as uint64_t;
             }
             current_block = 2167674248514145403;
         }
@@ -9463,8 +9183,7 @@ pub unsafe extern "C" fn genPotential(
     match current_block {
         2900234161786722821 => {
             printf(
-                b"genPotential() bad layer %d for version\n\0" as *const u8
-                    as *const libc::c_char,
+                b"genPotential() bad layer %d for version\n\0" as *const u8 as *const libc::c_char,
                 layer,
             );
         }
@@ -9485,7 +9204,7 @@ pub unsafe extern "C" fn getParaDescent(
     mut maxiter: libc::c_int,
     mut alpha: libc::c_double,
     mut data: *mut libc::c_void,
-    mut func: Option::<
+    mut func: Option<
         unsafe extern "C" fn(
             *mut libc::c_void,
             libc::c_int,
@@ -9511,14 +9230,15 @@ pub unsafe extern "C" fn getParaDescent(
             (z + j0) as libc::c_double,
         );
     if func.is_some() {
-        if func
-            .expect(
-                "non-null function pointer",
-            )(
+        if func.expect("non-null function pointer")(
             data,
             x + i0,
             z + j0,
-            if factor < 0 as libc::c_int as libc::c_double { -v } else { v },
+            if factor < 0 as libc::c_int as libc::c_double {
+                -v
+            } else {
+                v
+            },
         ) != 0
         {
             return nan(b"\0" as *const u8 as *const libc::c_char);
@@ -9562,9 +9282,7 @@ pub unsafe extern "C" fn getParaDescent(
         if dirx != 0 {
             let mut current_block_30: u64;
             dira = (dirx as libc::c_double * alpha * (v - vd)) as libc::c_int;
-            if abs(dira) > 2 as libc::c_int && i + dira >= 0 as libc::c_int
-                && i + dira < w
-            {
+            if abs(dira) > 2 as libc::c_int && i + dira >= 0 as libc::c_int && i + dira < w {
                 va = factor
                     * sampleDoublePerlin(
                         para,
@@ -9590,14 +9308,15 @@ pub unsafe extern "C" fn getParaDescent(
                 _ => {}
             }
             if func.is_some() {
-                if func
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                if func.expect("non-null function pointer")(
                     data,
                     x + i,
                     z + j,
-                    if factor < 0 as libc::c_int as libc::c_double { -v } else { v },
+                    if factor < 0 as libc::c_int as libc::c_double {
+                        -v
+                    } else {
+                        v
+                    },
                 ) != 0
                 {
                     return nan(b"\0" as *const u8 as *const libc::c_char);
@@ -9638,9 +9357,7 @@ pub unsafe extern "C" fn getParaDescent(
         if dirz != 0 {
             let mut current_block_55: u64;
             dira = (dirz as libc::c_double * alpha * (v - vd)) as libc::c_int;
-            if abs(dira) > 2 as libc::c_int && j + dira >= 0 as libc::c_int
-                && j + dira < h
-            {
+            if abs(dira) > 2 as libc::c_int && j + dira >= 0 as libc::c_int && j + dira < h {
                 va = factor
                     * sampleDoublePerlin(
                         para,
@@ -9666,14 +9383,15 @@ pub unsafe extern "C" fn getParaDescent(
                 _ => {}
             }
             if func.is_some() {
-                if func
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                if func.expect("non-null function pointer")(
                     data,
                     x + i,
                     z + j,
-                    if factor < 0 as libc::c_int as libc::c_double { -v } else { v },
+                    if factor < 0 as libc::c_int as libc::c_double {
+                        -v
+                    } else {
+                        v
+                    },
                 ) != 0
                 {
                     return nan(b"\0" as *const u8 as *const libc::c_char);
@@ -9694,8 +9412,10 @@ pub unsafe extern "C" fn getParaDescent(
                 } else {
                     1 as libc::c_int
                 };
-                if !(i + dirx < 0 as libc::c_int || i + dirx >= w
-                    || j + dirz < 0 as libc::c_int || j + dirz >= h)
+                if !(i + dirx < 0 as libc::c_int
+                    || i + dirx >= w
+                    || j + dirz < 0 as libc::c_int
+                    || j + dirz >= h)
                 {
                     vd = factor
                         * sampleDoublePerlin(
@@ -9734,7 +9454,7 @@ pub unsafe extern "C" fn getParaRange(
     mut w: libc::c_int,
     mut h: libc::c_int,
     mut data: *mut libc::c_void,
-    mut func: Option::<
+    mut func: Option<
         unsafe extern "C" fn(
             *mut libc::c_void,
             libc::c_int,
@@ -9771,8 +9491,7 @@ pub unsafe extern "C" fn getParaRange(
     lmax = 0 as libc::c_int as libc::c_double;
     i = 0 as libc::c_int;
     while i < (*para).octA.octcnt {
-        let mut lac: libc::c_double = (*((*para).octA.octaves).offset(i as isize))
-            .lacunarity;
+        let mut lac: libc::c_double = (*((*para).octA.octaves).offset(i as isize)).lacunarity;
         if lac < lmin {
             lmin = lac;
         }
@@ -9795,8 +9514,7 @@ pub unsafe extern "C" fn getParaRange(
                         (z + j) as libc::c_double,
                     );
                 if func.is_some() {
-                    err = func
-                        .expect("non-null function pointer")(data, x + i, z + j, v);
+                    err = func.expect("non-null function pointer")(data, x + i, z + j, v);
                     if err != 0 {
                         return err;
                     }
@@ -9813,8 +9531,7 @@ pub unsafe extern "C" fn getParaRange(
         }
         return 0 as libc::c_int;
     }
-    step = (0.5f64 / lmin - 1.19209290e-7f32 as libc::c_double) as libc::c_int
-        + 1 as libc::c_int;
+    step = (0.5f64 / lmin - 1.19209290e-7f32 as libc::c_double) as libc::c_int + 1 as libc::c_int;
     dr = lmax / lmin * beta;
     j = 0 as libc::c_int;
     's_176: loop {
@@ -9824,21 +9541,7 @@ pub unsafe extern "C" fn getParaRange(
         }
         i = 0 as libc::c_int;
         while i < w {
-            v = getParaDescent(
-                para,
-                factor,
-                x,
-                z,
-                w,
-                h,
-                i,
-                j,
-                step,
-                step,
-                dr,
-                data,
-                func,
-            );
+            v = getParaDescent(para, factor, x, z, w, h, i, j, step, step, dr, data, func);
             if v != v {
                 current_block = 6442418240192079606;
                 break 's_176;
@@ -9846,21 +9549,7 @@ pub unsafe extern "C" fn getParaRange(
             if v < *pmin {
                 *pmin = v;
             }
-            v = -getParaDescent(
-                para,
-                -factor,
-                x,
-                z,
-                w,
-                h,
-                i,
-                j,
-                step,
-                step,
-                dr,
-                data,
-                func,
-            );
+            v = -getParaDescent(para, -factor, x, z, w, h, i, j, step, step, dr, data, func);
             if v != v {
                 current_block = 6442418240192079606;
                 break 's_176;
@@ -9878,14 +9567,13 @@ pub unsafe extern "C" fn getParaRange(
                 return 0 as libc::c_int;
             }
             step = (1.0f64 / (perlin_grad * lmax + 1.19209290e-7f32 as libc::c_double))
-                as libc::c_int + 1 as libc::c_int;
+                as libc::c_int
+                + 1 as libc::c_int;
             vdif = 0 as libc::c_int as libc::c_double;
             i = 0 as libc::c_int;
             while i < (*para).octA.octcnt {
-                let mut p: *const PerlinNoise = ((*para).octA.octaves)
-                    .offset(i as isize);
-                let mut contrib: libc::c_double = step as libc::c_double
-                    * (*p).lacunarity * 1.0f64;
+                let mut p: *const PerlinNoise = ((*para).octA.octaves).offset(i as isize);
+                let mut contrib: libc::c_double = step as libc::c_double * (*p).lacunarity * 1.0f64;
                 if contrib > 1.0f64 {
                     contrib = 1 as libc::c_int as libc::c_double;
                 }
@@ -9895,10 +9583,9 @@ pub unsafe extern "C" fn getParaRange(
             i = 0 as libc::c_int;
             while i < (*para).octB.octcnt {
                 let lac_factB: libc::c_double = 337.0f64 / 331.0f64;
-                let mut p_0: *const PerlinNoise = ((*para).octB.octaves)
-                    .offset(i as isize);
-                let mut contrib_0: libc::c_double = step as libc::c_double
-                    * (*p_0).lacunarity * lac_factB;
+                let mut p_0: *const PerlinNoise = ((*para).octB.octaves).offset(i as isize);
+                let mut contrib_0: libc::c_double =
+                    step as libc::c_double * (*p_0).lacunarity * lac_factB;
                 if contrib_0 > 1.0f64 {
                     contrib_0 = 1 as libc::c_int as libc::c_double;
                 }
@@ -9910,8 +9597,7 @@ pub unsafe extern "C" fn getParaRange(
             maxiter = step * 2 as libc::c_int;
             ww = (w + step - 1 as libc::c_int) / step;
             hh = (h + step - 1 as libc::c_int) / step;
-            skipsiz = (((ww + 1 as libc::c_int) * (hh + 1 as libc::c_int))
-                as libc::c_ulong)
+            skipsiz = (((ww + 1 as libc::c_int) * (hh + 1 as libc::c_int)) as libc::c_ulong)
                 .wrapping_mul(::std::mem::size_of::<libc::c_char>() as libc::c_ulong)
                 as libc::c_int;
             skip = malloc(skipsiz as libc::c_ulong) as *mut libc::c_char;
@@ -9945,8 +9631,8 @@ pub unsafe extern "C" fn getParaRange(
                                 (z + j) as libc::c_double,
                             );
                         if func.is_some() {
-                            let mut e: libc::c_int = func
-                                .expect("non-null function pointer")(data, x + i, z + j, v);
+                            let mut e: libc::c_int =
+                                func.expect("non-null function pointer")(data, x + i, z + j, v);
                             if e != 0 {
                                 err = e;
                                 current_block = 6442418240192079606;
@@ -9967,10 +9653,8 @@ pub unsafe extern "C" fn getParaRange(
                                     a = -r + 1 as libc::c_int;
                                     while a < r {
                                         if !(a + ii < 0 as libc::c_int || a + ii >= ww) {
-                                            *skip
-                                                .offset(
-                                                    ((b + jj) * ww + (a + ii)) as isize,
-                                                ) = 1 as libc::c_int as libc::c_char;
+                                            *skip.offset(((b + jj) * ww + (a + ii)) as isize) =
+                                                1 as libc::c_int as libc::c_char;
                                         }
                                         a += 1;
                                     }
@@ -9979,19 +9663,7 @@ pub unsafe extern "C" fn getParaRange(
                             }
                         } else {
                             v = getParaDescent(
-                                para,
-                                factor,
-                                x,
-                                z,
-                                w,
-                                h,
-                                i,
-                                j,
-                                maxrad,
-                                maxiter,
-                                dr,
-                                data,
-                                func,
+                                para, factor, x, z, w, h, i, j, maxrad, maxiter, dr, data, func,
                             );
                             if v != v {
                                 current_block = 6442418240192079606;
@@ -10040,9 +9712,12 @@ pub unsafe extern "C" fn getParaRange(
                                     );
                                 if func.is_some() {
                                     let mut e_0: libc::c_int = func
-                                        .expect(
-                                            "non-null function pointer",
-                                        )(data, x + i, z + j, -v);
+                                        .expect("non-null function pointer")(
+                                        data,
+                                        x + i,
+                                        z + j,
+                                        -v,
+                                    );
                                     if e_0 != 0 {
                                         err = e_0;
                                         current_block = 6442418240192079606;
@@ -10059,11 +9734,11 @@ pub unsafe extern "C" fn getParaRange(
                                         if !(b_0 + jj < 0 as libc::c_int || b_0 + jj >= hh) {
                                             a_0 = -r_0 + 1 as libc::c_int;
                                             while a_0 < r_0 {
-                                                if !(a_0 + ii < 0 as libc::c_int || a_0 + ii >= ww) {
-                                                    *skip
-                                                        .offset(
-                                                            ((b_0 + jj) * ww + (a_0 + ii)) as isize,
-                                                        ) = 1 as libc::c_int as libc::c_char;
+                                                if !(a_0 + ii < 0 as libc::c_int || a_0 + ii >= ww)
+                                                {
+                                                    *skip.offset(
+                                                        ((b_0 + jj) * ww + (a_0 + ii)) as isize,
+                                                    ) = 1 as libc::c_int as libc::c_char;
                                                 }
                                                 a_0 += 1;
                                             }
@@ -10072,18 +9747,7 @@ pub unsafe extern "C" fn getParaRange(
                                     }
                                 } else {
                                     v = -getParaDescent(
-                                        para,
-                                        -factor,
-                                        x,
-                                        z,
-                                        w,
-                                        h,
-                                        i,
-                                        j,
-                                        maxrad,
-                                        maxiter,
-                                        dr,
-                                        data,
+                                        para, -factor, x, z, w, h, i, j, maxrad, maxiter, dr, data,
                                         func,
                                     );
                                     if v != v {
@@ -10978,7 +10642,8 @@ pub unsafe extern "C" fn getBiomeParaLimits(
             if g_biome_para_range_19_diff[i as usize][0 as libc::c_int as usize] == id {
                 return &*(*g_biome_para_range_19_diff.as_ptr().offset(i as isize))
                     .as_ptr()
-                    .offset(1 as libc::c_int as isize) as *const libc::c_int;
+                    .offset(1 as libc::c_int as isize)
+                    as *const libc::c_int;
             }
             i += 1;
         }
@@ -11021,18 +10686,15 @@ pub unsafe extern "C" fn getPossibleBiomesForLimits(
                     if (*limits.offset(j as isize))[0 as libc::c_int as usize]
                         > *bp.offset((2 as libc::c_int * j + 1 as libc::c_int) as isize)
                         || (*limits.offset(j as isize))[1 as libc::c_int as usize]
-                            < *bp
-                                .offset((2 as libc::c_int * j + 0 as libc::c_int) as isize)
+                            < *bp.offset((2 as libc::c_int * j + 0 as libc::c_int) as isize)
                     {
                         break;
                     }
                     j += 1;
                 }
                 if j >= 6 as libc::c_int {
-                    *ids
-                        .offset(
-                            *bp.offset(-(1 as libc::c_int) as isize) as isize,
-                        ) = 1 as libc::c_int as libc::c_char;
+                    *ids.offset(*bp.offset(-(1 as libc::c_int) as isize) as isize) =
+                        1 as libc::c_int as libc::c_char;
                 }
             }
         }

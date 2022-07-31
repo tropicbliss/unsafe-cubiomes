@@ -1,4 +1,12 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
+#![allow(
+    dead_code,
+    mutable_transmutes,
+    non_camel_case_types,
+    non_snake_case,
+    non_upper_case_globals,
+    unused_assignments,
+    unused_mut
+)]
 #![register_tool(c2rust)]
 #![feature(register_tool)]
 extern "C" {
@@ -259,16 +267,8 @@ extern "C" {
         _: libc::c_int,
     ) -> libc::c_int;
     fn printf(_: *const libc::c_char, _: ...) -> libc::c_int;
-    fn memcpy(
-        _: *mut libc::c_void,
-        _: *const libc::c_void,
-        _: libc::c_ulong,
-    ) -> *mut libc::c_void;
-    fn memset(
-        _: *mut libc::c_void,
-        _: libc::c_int,
-        _: libc::c_ulong,
-    ) -> *mut libc::c_void;
+    fn memcpy(_: *mut libc::c_void, _: *const libc::c_void, _: libc::c_ulong) -> *mut libc::c_void;
+    fn memset(_: *mut libc::c_void, _: libc::c_int, _: libc::c_ulong) -> *mut libc::c_void;
 }
 pub type size_t = libc::c_ulong;
 pub type __int8_t = libc::c_schar;
@@ -565,7 +565,7 @@ pub struct Range {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct Layer {
-    pub getMap: Option::<mapfunc_t>,
+    pub getMap: Option<mapfunc_t>,
     pub mc: int8_t,
     pub zoom: int8_t,
     pub edge: int8_t,
@@ -768,9 +768,7 @@ pub unsafe extern "C" fn setupGenerator(
         );
         let ref mut fresh0 = (*g).c2rust_unnamed.c2rust_unnamed.entry;
         *fresh0 = 0 as *mut Layer;
-        if flags & 0x4 as libc::c_int as libc::c_uint != 0
-            && mc >= MC_1_13 as libc::c_int
-        {
+        if flags & 0x4 as libc::c_int as libc::c_uint != 0 && mc >= MC_1_13 as libc::c_int {
             let ref mut fresh1 = (*g).c2rust_unnamed.c2rust_unnamed.ls.entry_16;
             *fresh1 = setupLayer(
                 ((*g).c2rust_unnamed.c2rust_unnamed.xlayer)
@@ -883,7 +881,8 @@ pub unsafe extern "C" fn applySeed(
         setEndSeed(&mut (*g).en, seed);
     }
     if (*g).mc >= MC_1_15 as libc::c_int {
-        if (*g).mc <= MC_1_17 as libc::c_int && dim == 0 as libc::c_int
+        if (*g).mc <= MC_1_17 as libc::c_int
+            && dim == 0 as libc::c_int
             && ((*g).c2rust_unnamed.c2rust_unnamed.entry).is_null()
         {
             (*g).sha = (*(*g).c2rust_unnamed.c2rust_unnamed.ls.entry_1).startSalt;
@@ -916,26 +915,21 @@ pub unsafe extern "C" fn getMinCacheSize(
             exit(1 as libc::c_int);
         }
         let mut len2d: size_t = getMinLayerCacheSize(entry, sx, sz);
-        len = (len as libc::c_ulong)
-            .wrapping_add(len2d.wrapping_sub((sx * sz) as libc::c_ulong)) as size_t
-            as size_t;
+        len = (len as libc::c_ulong).wrapping_add(len2d.wrapping_sub((sx * sz) as libc::c_ulong))
+            as size_t as size_t;
     } else if scale <= 1 as libc::c_int {
         sx = (sx + 3 as libc::c_int >> 2 as libc::c_int) + 2 as libc::c_int;
         sy = (sy + 3 as libc::c_int >> 2 as libc::c_int) + 2 as libc::c_int;
         sz = (sz + 3 as libc::c_int >> 2 as libc::c_int) + 2 as libc::c_int;
-        len = (len as libc::c_ulong).wrapping_add((sx * sy * sz) as libc::c_ulong)
-            as size_t as size_t;
+        len = (len as libc::c_ulong).wrapping_add((sx * sy * sz) as libc::c_ulong) as size_t
+            as size_t;
     }
     return len;
 }
 #[no_mangle]
-pub unsafe extern "C" fn allocCache(
-    mut g: *const Generator,
-    mut r: Range,
-) -> *mut libc::c_int {
+pub unsafe extern "C" fn allocCache(mut g: *const Generator, mut r: Range) -> *mut libc::c_int {
     let mut len: size_t = getMinCacheSize(g, r.scale, r.sx, r.sy, r.sz);
-    return calloc(len, ::std::mem::size_of::<libc::c_int>() as libc::c_ulong)
-        as *mut libc::c_int;
+    return calloc(len, ::std::mem::size_of::<libc::c_int>() as libc::c_ulong) as *mut libc::c_int;
 }
 #[no_mangle]
 pub unsafe extern "C" fn genBiomes(
@@ -960,10 +954,7 @@ pub unsafe extern "C" fn genBiomes(
             while k < r.sy {
                 i = 0 as libc::c_int;
                 while i < r.sx * r.sz {
-                    *cache
-                        .offset(
-                            (k * r.sx * r.sz + i) as isize,
-                        ) = *cache.offset(i as isize);
+                    *cache.offset((k * r.sx * r.sz + i) as isize) = *cache.offset(i as isize);
                     i += 1;
                 }
                 k += 1;
@@ -976,11 +967,11 @@ pub unsafe extern "C" fn genBiomes(
                 r,
                 (*g).mc,
                 (*g).sha,
-            )
+            );
         }
     } else {
         if (*g).dim == -(1 as libc::c_int) {
-            return genNetherScaled(&(*g).nn, cache, r, (*g).mc, (*g).sha)
+            return genNetherScaled(&(*g).nn, cache, r, (*g).mc, (*g).sha);
         } else {
             if (*g).dim == 1 as libc::c_int {
                 return genEndScaled(&(*g).en, cache, r, (*g).mc, (*g).sha);
@@ -1040,7 +1031,7 @@ pub unsafe extern "C" fn getLayerForScale(
 #[no_mangle]
 pub unsafe extern "C" fn setupLayer(
     mut l: *mut Layer,
-    mut map: Option::<mapfunc_t>,
+    mut map: Option<mapfunc_t>,
     mut mc: libc::c_int,
     mut zoom: int8_t,
     mut edge: int8_t,
@@ -2199,63 +2190,57 @@ pub unsafe extern "C" fn setupLayerStack(
     let ref mut fresh10 = (*g).entry_1;
     *fresh10 = p;
     let ref mut fresh11 = (*g).entry_4;
-    *fresh11 = l
-        .offset(
-            (if mc <= MC_1_12 as libc::c_int {
-                L_RIVER_MIX_4 as libc::c_int
-            } else {
-                L_OCEAN_MIX_4 as libc::c_int
-            }) as isize,
-        );
+    *fresh11 = l.offset(
+        (if mc <= MC_1_12 as libc::c_int {
+            L_RIVER_MIX_4 as libc::c_int
+        } else {
+            L_OCEAN_MIX_4 as libc::c_int
+        }) as isize,
+    );
     if largeBiomes != 0 {
         let ref mut fresh12 = (*g).entry_16;
         *fresh12 = l.offset(L_ZOOM_4 as libc::c_int as isize);
         let ref mut fresh13 = (*g).entry_64;
-        *fresh13 = l
-            .offset(
-                (if mc <= MC_1_6 as libc::c_int {
-                    L_SWAMP_RIVER_16 as libc::c_int
-                } else {
-                    L_SHORE_16 as libc::c_int
-                }) as isize,
-            );
+        *fresh13 = l.offset(
+            (if mc <= MC_1_6 as libc::c_int {
+                L_SWAMP_RIVER_16 as libc::c_int
+            } else {
+                L_SHORE_16 as libc::c_int
+            }) as isize,
+        );
         let ref mut fresh14 = (*g).entry_256;
-        *fresh14 = l
-            .offset(
-                (if mc <= MC_1_7 as libc::c_int {
-                    L_HILLS_64 as libc::c_int
-                } else {
-                    L_SUNFLOWER_64 as libc::c_int
-                }) as isize,
-            );
+        *fresh14 = l.offset(
+            (if mc <= MC_1_7 as libc::c_int {
+                L_HILLS_64 as libc::c_int
+            } else {
+                L_SUNFLOWER_64 as libc::c_int
+            }) as isize,
+        );
     } else if mc >= MC_1_1 as libc::c_int {
         let ref mut fresh15 = (*g).entry_16;
-        *fresh15 = l
-            .offset(
-                (if mc <= MC_1_6 as libc::c_int {
-                    L_SWAMP_RIVER_16 as libc::c_int
-                } else {
-                    L_SHORE_16 as libc::c_int
-                }) as isize,
-            );
+        *fresh15 = l.offset(
+            (if mc <= MC_1_6 as libc::c_int {
+                L_SWAMP_RIVER_16 as libc::c_int
+            } else {
+                L_SHORE_16 as libc::c_int
+            }) as isize,
+        );
         let ref mut fresh16 = (*g).entry_64;
-        *fresh16 = l
-            .offset(
-                (if mc <= MC_1_7 as libc::c_int {
-                    L_HILLS_64 as libc::c_int
-                } else {
-                    L_SUNFLOWER_64 as libc::c_int
-                }) as isize,
-            );
+        *fresh16 = l.offset(
+            (if mc <= MC_1_7 as libc::c_int {
+                L_HILLS_64 as libc::c_int
+            } else {
+                L_SUNFLOWER_64 as libc::c_int
+            }) as isize,
+        );
         let ref mut fresh17 = (*g).entry_256;
-        *fresh17 = l
-            .offset(
-                (if mc <= MC_1_14 as libc::c_int {
-                    L_BIOME_256 as libc::c_int
-                } else {
-                    L_BAMBOO_256 as libc::c_int
-                }) as isize,
-            );
+        *fresh17 = l.offset(
+            (if mc <= MC_1_14 as libc::c_int {
+                L_BIOME_256 as libc::c_int
+            } else {
+                L_BAMBOO_256 as libc::c_int
+            }) as isize,
+        );
     } else {
         let ref mut fresh18 = (*g).entry_16;
         *fresh18 = l.offset(L_ZOOM_16 as libc::c_int as isize);
@@ -2280,8 +2265,8 @@ unsafe extern "C" fn getMaxArea(
     areaX += (*layer).edge as libc::c_int;
     areaZ += (*layer).edge as libc::c_int;
     if !((*layer).p2).is_null() || (*layer).zoom as libc::c_int != 1 as libc::c_int {
-        *siz = (*siz as libc::c_ulong).wrapping_add((areaX * areaZ) as libc::c_ulong)
-            as size_t as size_t;
+        *siz = (*siz as libc::c_ulong).wrapping_add((areaX * areaZ) as libc::c_ulong) as size_t
+            as size_t;
     }
     if areaX > *maxX {
         *maxX = areaX;
@@ -2328,8 +2313,7 @@ pub unsafe extern "C" fn genArea(
         ((areaWidth * areaHeight) as libc::c_ulong)
             .wrapping_mul(::std::mem::size_of::<libc::c_int>() as libc::c_ulong),
     );
-    return ((*layer).getMap)
-        .expect(
-            "non-null function pointer",
-        )(layer, out, areaX, areaZ, areaWidth, areaHeight);
+    return ((*layer).getMap).expect("non-null function pointer")(
+        layer, out, areaX, areaZ, areaWidth, areaHeight,
+    );
 }
